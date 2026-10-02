@@ -46,11 +46,11 @@ npm run dev                         # http://localhost:8788
 
 ```bash
 npx wrangler login
-npx wrangler d1 create didi-classes          # copy the database_id into wrangler.toml
+npx wrangler d1 create didi-poledance          # copy the database_id into wrangler.toml
 npm run db:init:remote
-npx wrangler pages project create didi-classes
-npx wrangler pages secret put ADMIN_PASSWORD
-npx wrangler pages secret put SESSION_SECRET  # a long random string, e.g. `openssl rand -hex 32`
+npx wrangler pages project create didi-poledance
+npx wrangler pages secret put ADMIN_PASSWORD (dee123)
+npx wrangler pages secret put SESSION_SECRET (L7rZYVEM3dMWnvgMUH+XFoPmTr/R52GX+OyQcJqhv6g=)  # a long random string, e.g. `openssl rand -hex 32`
 npm run deploy
 ```
 

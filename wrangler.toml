@@ -1,9 +1,9 @@
-name = "didi-classes"
+name = "didi-poledance"
 compatibility_date = "2025-09-01"
 pages_build_output_dir = "./public"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "didi-classes"
-# Replace with the id printed by `npx wrangler d1 create didi-classes`
-database_id = "00000000-0000-0000-0000-000000000000"
+database_name = "didi-poledance"
+# Replace with the id printed by `npx wrangler d1 create didi-poledance`
+database_id = "62b5f4ee-158d-4434-9090-3d8bc480bd16"
