@@ -74,8 +74,7 @@ class AdminPage {
       const form = e.currentTarget as HTMLFormElement;
       this.clearMessages();
 
-      const startsAt = Time.fromSofiaInput($('#e-start').val() as string);
-      ($('#e-start')[0] as HTMLInputElement).setCustomValidity(startsAt !== null ? '' : 'invalid');
+      const startsAt = Time.fromSofiaInput(`${$('#e-start-date').val() as string}T${$('#e-start-time').val() as string}`);
       if (!form.checkValidity()) {
         $(form).addClass('was-validated');
         return;
@@ -254,7 +253,9 @@ class AdminPage {
     const ev = this.current && this.current.event;
     $('#e-name').val(ev ? ev.name : '');
     $('#e-description').val(ev ? ev.description : '');
-    $('#e-start').val(ev ? Time.toSofiaInput(ev.startsAt) : '');
+    const sofiaStr = ev ? Time.toSofiaInput(ev.startsAt) : '';
+    $('#e-start-date').val(sofiaStr ? sofiaStr.split('T')[0] : '');
+    $('#e-start-time').val(sofiaStr ? sofiaStr.split('T')[1] : '');
     $('#e-duration').val(ev ? ev.durationMinutes : 60);
     $('#e-capacity').val(ev ? ev.capacity : 12);
   }

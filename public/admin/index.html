@@ -104,9 +104,14 @@
                 <label for="e-description" class="form-label" data-i18n="admin.description"></label>
                 <textarea class="form-control" id="e-description" rows="3" maxlength="2000"></textarea>
               </div>
-              <div class="col-md-6 d-flex flex-column">
-                <label for="e-start" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.start"></label>
-                <input type="datetime-local" class="form-control" id="e-start" required>
+              <div class="col-6 col-md-3 d-flex flex-column">
+                <label for="e-start-date" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.startDate"></label>
+                <input type="date" class="form-control" id="e-start-date" required>
+                <div class="invalid-feedback" data-i18n="err.invalid_start"></div>
+              </div>
+              <div class="col-6 col-md-3 d-flex flex-column">
+                <label for="e-start-time" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.startTime"></label>
+                <input type="time" class="form-control" id="e-start-time" required>
                 <div class="invalid-feedback" data-i18n="err.invalid_start"></div>
               </div>
               <div class="col-6 col-md-3 d-flex flex-column">
