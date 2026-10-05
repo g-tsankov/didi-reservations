@@ -11,7 +11,7 @@
     "dev:debug": "npm run build && wrangler pages dev --inspector-port 9229",
     "db:init:local": "wrangler d1 execute didi-poledance --local --file=./db/schema.sql",
     "db:init:remote": "wrangler d1 execute didi-poledance --remote --file=./db/schema.sql",
-    "deploy": "wrangler pages deploy"
+    "deploy": "npm run build && wrangler pages deploy"
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.8",
