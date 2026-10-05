@@ -2,3 +2,5 @@ node_modules/
 .wrangler/
 .dev.vars
 .vscode/
+.idea/
+_bmad/render/
