@@ -1,8 +1,8 @@
 // Shared helpers for the public site and the admin area: translations and Sofia-time handling.
 
-window.I18n = (function () {
+window.I18n = (function (): I18nModule {
   const STORAGE_KEY = 'lang';
-  const listeners = [];
+  const listeners: ((lang: string) => void)[] = [];
   let lang = 'bg';
 
   try {
@@ -12,40 +12,44 @@ window.I18n = (function () {
     lang = (window.SITE_CONFIG && SITE_CONFIG.defaultLanguage) || 'bg';
   }
 
-  function has(key) {
+  function has(key: string): boolean {
     return key in TRANSLATIONS[lang];
   }
 
-  function t(key, vars) {
+  function t(key: TranslationKey, vars?: Record<string, string | number>): string {
     let text = has(key) ? TRANSLATIONS[lang][key] : key;
-    $.each(vars || {}, (name, value) => {
-      text = text.split(`{${name}}`).join(value);
-    });
+    if (vars) {
+      $.each(vars, (k: string, v: string | number) => {
+        text = text.split(`{${k}}`).join(String(v));
+      });
+    }
     return text;
   }
 
   // Translates an API error response (or error code) into a user-facing message.
-  function error(xhrOrCode) {
-    const body = xhrOrCode && xhrOrCode.responseJSON;
-    const code = body ? body.error : xhrOrCode;
-    return has(`err.${code}`) ? t(`err.${code}`, body) : t('err.generic');
+  function error(xhrOrCode: unknown): string {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const input = xhrOrCode as any;
+    const body = input && input.responseJSON;
+    const code: unknown = body ? body.error : xhrOrCode;
+    return has(`err.${code}`) ? t(`err.${code}` as TranslationKey, body as Record<string, string | number>) : t('err.generic');
   }
 
-  function apply() {
+  function apply(): void {
     document.documentElement.lang = lang;
-    $('[data-i18n]').each(function () {
-      $(this).text(t($(this).data('i18n')));
+    $('[data-i18n]').each(function (this: HTMLElement) {
+      $(this).text(t($(this).data('i18n') as TranslationKey));
     });
-    $('[data-i18n-placeholder]').each(function () {
-      $(this).attr('placeholder', t($(this).data('i18n-placeholder')));
+    $('[data-i18n-placeholder]').each(function (this: HTMLElement) {
+      $(this).attr('placeholder', t($(this).data('i18n-placeholder') as TranslationKey));
     });
-    $('.lang-switch [data-lang]').each(function () {
+    $('.lang-switch [data-lang]').each(function (this: HTMLElement) {
       const active = $(this).data('lang') === lang;
-      $(this).toggleClass('active', active).attr('aria-pressed', active);
+      $(this).toggleClass('active', active).attr('aria-pressed', String(active));
     });
   }
 
-  function set(newLang) {
+  function set(newLang: string): void {
     if (newLang === lang) return;
     lang = newLang;
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* storage unavailable */ }
@@ -53,8 +57,8 @@ window.I18n = (function () {
     listeners.forEach(fn => fn(lang));
   }
 
-  $(document).on('click', '.lang-switch [data-lang]', function () {
-    set($(this).data('lang'));
+  $(document).on('click', '.lang-switch [data-lang]', function (this: HTMLElement) {
+    set($(this).data('lang') as string);
   });
 
   return {
@@ -62,38 +66,38 @@ window.I18n = (function () {
     has,
     error,
     apply,
-    onChange(fn) { listeners.push(fn); },
+    onChange(fn: (lang: string) => void) { listeners.push(fn); },
     get lang() { return lang; },
   };
 })();
 
-window.Time = (function () {
+window.Time = (function (): TimeModule {
   const TZ = 'Europe/Sofia';
 
-  function locale() {
+  function locale(): string {
     return I18n.lang === 'bg' ? 'bg-BG' : 'en-GB';
   }
 
-  function sofiaParts(ms) {
-    const parts = {};
+  function sofiaParts(ms: number): { year: string; month: string; day: string; hour: string; minute: string; second: string } {
+    const parts: Record<string, string> = {};
     new Intl.DateTimeFormat('en-US', {
       timeZone: TZ, hourCycle: 'h23',
       year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
     }).formatToParts(new Date(ms)).forEach(p => { parts[p.type] = p.value; });
     parts.hour = String(Number(parts.hour) % 24).padStart(2, '0');
-    return parts;
+    return parts as { year: string; month: string; day: string; hour: string; minute: string; second: string };
   }
 
   // How far Sofia's wall clock is ahead of UTC at the given instant.
-  function offsetMs(ms) {
+  function offsetMs(ms: number): number {
     const p = sofiaParts(ms);
     const wallAsUtc = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
     return wallAsUtc - (ms - (ms % 1000));
   }
 
   // "2026-10-05T18:30" (Sofia wall-clock time) -> epoch ms.
-  function fromSofiaInput(value) {
+  function fromSofiaInput(value: string | undefined | null): number | null {
     const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value || '');
     if (!m) return null;
     const guess = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
@@ -105,25 +109,25 @@ window.Time = (function () {
   }
 
   // epoch ms -> "2026-10-05T18:30" for <input type="datetime-local">.
-  function toSofiaInput(ms) {
+  function toSofiaInput(ms: number): string {
     const p = sofiaParts(ms);
     return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
   }
 
-  function format(ms, options) {
-    return new Intl.DateTimeFormat(locale(), $.extend({ timeZone: TZ }, options)).format(new Date(ms));
+  function format(ms: number, options?: Intl.DateTimeFormatOptions): string {
+    return new Intl.DateTimeFormat(locale(), $.extend({ timeZone: TZ }, options) as Intl.DateTimeFormatOptions).format(new Date(ms));
   }
 
-  function time(ms) {
+  function time(ms: number): string {
     return format(ms, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
   }
 
-  function timeRange(start, end) {
+  function timeRange(start: number, end: number): string {
     return `${time(start)} – ${time(end)}`;
   }
 
-  function longDate(ms, withYear) {
-    const opts = { weekday: 'long', day: 'numeric', month: 'long' };
+  function longDate(ms: number, withYear?: boolean): string {
+    const opts: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
     if (withYear) opts.year = 'numeric';
     return format(ms, opts);
   }
@@ -138,4 +142,4 @@ window.Time = (function () {
   };
 })();
 
-window.icon = name => $('<i class="bi" aria-hidden="true"></i>').addClass(`bi-${name}`);
+window.icon = (name: string): JQuery => $('<i class="bi" aria-hidden="true"></i>').addClass(`bi-${name}`);
