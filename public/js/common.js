@@ -18,8 +18,8 @@ window.I18n = (function () {
 
   function t(key, vars) {
     let text = has(key) ? TRANSLATIONS[lang][key] : key;
-    $.each(vars || {}, function (name, value) {
-      text = text.split('{' + name + '}').join(value);
+    $.each(vars || {}, (name, value) => {
+      text = text.split(`{${name}}`).join(value);
     });
     return text;
   }
@@ -28,7 +28,7 @@ window.I18n = (function () {
   function error(xhrOrCode) {
     const body = xhrOrCode && xhrOrCode.responseJSON;
     const code = body ? body.error : xhrOrCode;
-    return has('err.' + code) ? t('err.' + code, body) : t('err.generic');
+    return has(`err.${code}`) ? t(`err.${code}`, body) : t('err.generic');
   }
 
   function apply() {
@@ -50,7 +50,7 @@ window.I18n = (function () {
     lang = newLang;
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* storage unavailable */ }
     apply();
-    listeners.forEach(function (fn) { fn(lang); });
+    listeners.forEach(fn => fn(lang));
   }
 
   $(document).on('click', '.lang-switch [data-lang]', function () {
@@ -58,11 +58,11 @@ window.I18n = (function () {
   });
 
   return {
-    t: t,
-    has: has,
-    error: error,
-    apply: apply,
-    onChange: function (fn) { listeners.push(fn); },
+    t,
+    has,
+    error,
+    apply,
+    onChange(fn) { listeners.push(fn); },
     get lang() { return lang; },
   };
 })();
@@ -80,7 +80,7 @@ window.Time = (function () {
       timeZone: TZ, hourCycle: 'h23',
       year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
-    }).formatToParts(new Date(ms)).forEach(function (p) { parts[p.type] = p.value; });
+    }).formatToParts(new Date(ms)).forEach(p => { parts[p.type] = p.value; });
     parts.hour = String(Number(parts.hour) % 24).padStart(2, '0');
     return parts;
   }
@@ -107,7 +107,7 @@ window.Time = (function () {
   // epoch ms -> "2026-10-05T18:30" for <input type="datetime-local">.
   function toSofiaInput(ms) {
     const p = sofiaParts(ms);
-    return p.year + '-' + p.month + '-' + p.day + 'T' + p.hour + ':' + p.minute;
+    return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
   }
 
   function format(ms, options) {
@@ -119,7 +119,7 @@ window.Time = (function () {
   }
 
   function timeRange(start, end) {
-    return time(start) + ' – ' + time(end);
+    return `${time(start)} – ${time(end)}`;
   }
 
   function longDate(ms, withYear) {
@@ -129,15 +129,13 @@ window.Time = (function () {
   }
 
   return {
-    fromSofiaInput: fromSofiaInput,
-    toSofiaInput: toSofiaInput,
-    format: format,
-    time: time,
-    timeRange: timeRange,
-    longDate: longDate,
+    fromSofiaInput,
+    toSofiaInput,
+    format,
+    time,
+    timeRange,
+    longDate,
   };
 })();
 
-window.icon = function (name) {
-  return $('<i class="bi" aria-hidden="true"></i>').addClass('bi-' + name);
-};
+window.icon = name => $('<i class="bi" aria-hidden="true"></i>').addClass(`bi-${name}`);

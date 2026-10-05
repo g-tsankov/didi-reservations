@@ -1,4 +1,4 @@
-$(function () {
+$(() => {
   const t = I18n.t;
   const modal = new bootstrap.Modal('#eventModal');
 
@@ -13,7 +13,7 @@ $(function () {
       dataType: 'json',
       contentType: body ? 'application/json' : undefined,
       data: body ? JSON.stringify(body) : undefined,
-    }).fail(function (xhr) {
+    }).fail(xhr => {
       // Login and the start-up session check handle their own 401s.
       if (xhr.status === 401 && url !== '/api/admin/login' && url !== '/api/admin/session') {
         modal.hide();
@@ -38,17 +38,17 @@ $(function () {
     loadEvents();
   }
 
-  $('#login-form').on('submit', function (e) {
+  $('#login-form').on('submit', e => {
     e.preventDefault();
     $('#login-submit').prop('disabled', true);
     api('POST', '/api/admin/login', { password: $('#password').val() })
       .done(showApp)
-      .fail(function (xhr) { showLogin(I18n.error(xhr)); })
-      .always(function () { $('#login-submit').prop('disabled', false); });
+      .fail(xhr => showLogin(I18n.error(xhr)))
+      .always(() => { $('#login-submit').prop('disabled', false); });
   });
 
-  $('#logout').on('click', function () {
-    api('POST', '/api/admin/logout').always(function () { showLogin(); });
+  $('#logout').on('click', () => {
+    api('POST', '/api/admin/logout').always(() => showLogin());
   });
 
   // ---- Event list ----
@@ -68,7 +68,7 @@ $(function () {
 
   function renderTable() {
     const $body = $('#events-body').empty();
-    const visible = events.filter(function (ev) {
+    const visible = events.filter(ev => {
       const status = statusOf(ev);
       if (filter === 'upcoming') return status !== 'past';
       if (filter === 'past') return status === 'past';
@@ -77,7 +77,7 @@ $(function () {
 
     $('#events-empty').toggleClass('d-none', visible.length > 0);
 
-    visible.forEach(function (ev) {
+    visible.forEach(ev => {
       const status = statusOf(ev);
       const badge = STATUS_BADGE[status];
       $body.append(
@@ -87,7 +87,7 @@ $(function () {
             $('<div>').text(Time.longDate(ev.startsAt, true)),
             $('<div class="small text-body-secondary">').text(Time.timeRange(ev.startsAt, ev.endsAt)),
           ),
-          $('<td class="text-center">').text(ev.booked + ' / ' + ev.capacity),
+          $('<td class="text-center">').text(`${ev.booked} / ${ev.capacity}`),
           $('<td>').append($('<span class="badge">').addClass(badge[0]).text(t(badge[1]))),
         ),
       );
@@ -95,7 +95,7 @@ $(function () {
   }
 
   function loadEvents() {
-    return api('GET', '/api/admin/events').done(function (data) {
+    return api('GET', '/api/admin/events').done(data => {
       events = data.events;
       renderTable();
     });
@@ -109,14 +109,10 @@ $(function () {
   });
 
   $('#events-body').on('click', 'tr', function () {
-    api('GET', '/api/admin/events/' + $(this).data('id')).done(function (data) {
-      openModal(data);
-    });
+    api('GET', `/api/admin/events/${$(this).data('id')}`).done(data => openModal(data));
   });
 
-  $('#new-event').on('click', function () {
-    openModal(null);
-  });
+  $('#new-event').on('click', () => openModal(null));
 
   // ---- Create / edit popup ----
 
@@ -157,12 +153,12 @@ $(function () {
     $('#signups-table').toggleClass('d-none', list.length === 0);
 
     const $body = $('#signups-body').empty();
-    list.forEach(function (r) {
+    list.forEach(r => {
       $body.append(
         $('<tr>').append(
           $('<td>').text(r.name),
-          $('<td>').append($('<a>').attr('href', 'mailto:' + r.email).text(r.email)),
-          $('<td class="text-nowrap">').append($('<a>').attr('href', 'tel:' + r.phone.replace(/[^+\d]/g, '')).text(r.phone)),
+          $('<td>').append($('<a>').attr('href', `mailto:${r.email}`).text(r.email)),
+          $('<td class="text-nowrap">').append($('<a>').attr('href', `tel:${r.phone.replace(/[^+\d]/g, '')}`).text(r.phone)),
           $('<td class="small text-body-secondary text-nowrap">').text(
             Time.format(r.createdAt, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }),
           ),
@@ -176,7 +172,7 @@ $(function () {
     });
   }
 
-  $('#eventModal').on('shown.bs.modal', function () {
+  $('#eventModal').on('shown.bs.modal', () => {
     if (!current) $('#e-name').trigger('focus');
   });
 
@@ -194,17 +190,17 @@ $(function () {
     const body = {
       name: $('#e-name').val(),
       description: $('#e-description').val(),
-      startsAt: startsAt,
+      startsAt,
       durationMinutes: Number($('#e-duration').val()),
       capacity: Number($('#e-capacity').val()),
     };
     const request = current
-      ? api('PUT', '/api/admin/events/' + current.event.id, body)
+      ? api('PUT', `/api/admin/events/${current.event.id}`, body)
       : api('POST', '/api/admin/events', body);
 
     $('#save-event').prop('disabled', true);
     request
-      .done(function (data) {
+      .done(data => {
         current = data;
         $('#event-form').removeClass('was-validated');
         fillForm();
@@ -212,20 +208,20 @@ $(function () {
         $('#event-saved').removeClass('d-none');
         loadEvents();
       })
-      .fail(function (xhr) {
+      .fail(xhr => {
         if (xhr.status !== 401) $('#event-error').text(I18n.error(xhr)).removeClass('d-none');
       })
-      .always(function () { $('#save-event').prop('disabled', false); });
+      .always(() => { $('#save-event').prop('disabled', false); });
   });
 
-  $('#delete-event').on('click', function () {
+  $('#delete-event').on('click', () => {
     if (!current || !window.confirm(t('admin.confirmDelete'))) return;
-    api('DELETE', '/api/admin/events/' + current.event.id)
-      .done(function () {
+    api('DELETE', `/api/admin/events/${current.event.id}`)
+      .done(() => {
         modal.hide();
         loadEvents();
       })
-      .fail(function (xhr) {
+      .fail(xhr => {
         if (xhr.status !== 401) $('#event-error').text(I18n.error(xhr)).removeClass('d-none');
       });
   });
@@ -235,14 +231,14 @@ $(function () {
     if (!window.confirm(t('admin.confirmRemove', { name: $btn.data('name') }))) return;
 
     $btn.prop('disabled', true);
-    api('DELETE', '/api/admin/reservations/' + $btn.data('id'))
-      .then(function () { return api('GET', '/api/admin/events/' + current.event.id); })
-      .done(function (data) {
+    api('DELETE', `/api/admin/reservations/${$btn.data('id')}`)
+      .then(() => api('GET', `/api/admin/events/${current.event.id}`))
+      .done(data => {
         current = data;
         renderSignups();
         loadEvents();
       })
-      .fail(function (xhr) {
+      .fail(xhr => {
         $btn.prop('disabled', false);
         if (xhr.status !== 401) $('#event-error').text(I18n.error(xhr)).removeClass('d-none');
       });
@@ -250,19 +246,19 @@ $(function () {
 
   // ---- Start-up ----
 
-  I18n.onChange(function () {
-    document.title = t('admin.title') + ' · ' + SITE_CONFIG.businessName;
+  I18n.onChange(() => {
+    document.title = `${t('admin.title')} · ${SITE_CONFIG.businessName}`;
     renderTable();
     if ($('#eventModal').hasClass('show')) renderModal();
   });
 
   I18n.apply();
-  document.title = t('admin.title') + ' · ' + SITE_CONFIG.businessName;
+  document.title = `${t('admin.title')} · ${SITE_CONFIG.businessName}`;
   $('.business-name').text(SITE_CONFIG.businessName);
 
   api('GET', '/api/admin/session')
     .done(showApp)
-    .fail(function (xhr) {
+    .fail(xhr => {
       showLogin(xhr.status === 401 ? '' : I18n.error(xhr));
     });
 });

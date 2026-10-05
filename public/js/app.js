@@ -1,4 +1,4 @@
-$(function () {
+$(() => {
   const cfg = window.SITE_CONFIG;
   const t = I18n.t;
   const modal = new bootstrap.Modal('#reserveModal');
@@ -8,12 +8,12 @@ $(function () {
   let current = null;  // event shown in the popup
 
   function renderStatic() {
-    document.title = cfg.businessName + ' · ' + t('pageTitle');
+    document.title = `${cfg.businessName} · ${t('pageTitle')}`;
     $('#address').text(cfg.address);
     $('.business-name').text(cfg.businessName);
     $('#contact-name').text(cfg.contact.name);
-    $('#contact-email').text(cfg.contact.email).attr('href', 'mailto:' + cfg.contact.email);
-    $('#contact-phone').text(cfg.contact.phone).attr('href', 'tel:' + cfg.contact.phone.replace(/[^+\d]/g, ''));
+    $('#contact-email').text(cfg.contact.email).attr('href', `mailto:${cfg.contact.email}`);
+    $('#contact-phone').text(cfg.contact.phone).attr('href', `tel:${cfg.contact.phone.replace(/[^+\d]/g, '')}`);
   }
 
   function spotsText(n) {
@@ -95,14 +95,14 @@ $(function () {
     }
 
     $state.addClass('d-none');
-    events.forEach(function (ev) { $list.append(buildCard(ev)); });
+    events.forEach(ev => $list.append(buildCard(ev)));
   }
 
   function loadEvents() {
     loadFailed = false;
     return $.getJSON('/api/events')
-      .done(function (data) { events = data.events; })
-      .fail(function () { loadFailed = events === null; })
+      .done(data => { events = data.events; })
+      .fail(() => { loadFailed = events === null; })
       .always(renderEvents);
   }
 
@@ -120,7 +120,7 @@ $(function () {
   }
 
   function openReservation(id) {
-    current = events.find(function (ev) { return ev.id === id; });
+    current = events.find(ev => ev.id === id);
     if (!current) return;
 
     const form = $('#reserve-form')[0];
@@ -144,14 +144,14 @@ $(function () {
       openReservation($(this).data('id'));
     }
   });
-  $('#events-state').on('click', '#retry', function () {
+  $('#events-state').on('click', '#retry', () => {
     events = null;
     loadFailed = false;
     renderEvents();
     loadEvents();
   });
 
-  $('#reserveModal').on('shown.bs.modal', function () {
+  $('#reserveModal').on('shown.bs.modal', () => {
     $('#r-name').trigger('focus');
   });
 
@@ -167,7 +167,7 @@ $(function () {
 
     setBusy(true);
     $.ajax({
-      url: '/api/events/' + current.id + '/reserve',
+      url: `/api/events/${current.id}/reserve`,
       method: 'POST',
       contentType: 'application/json',
       dataType: 'json',
@@ -177,22 +177,22 @@ $(function () {
         phone: $('#r-phone').val(),
       }),
     })
-      .done(function () {
+      .done(() => {
         $(form).addClass('d-none');
         $('#reserve-success').removeClass('d-none');
-        loadEvents().done(function () {
-          const fresh = events.find(function (ev) { return ev.id === current.id; });
+        loadEvents().done(() => {
+          const fresh = events.find(ev => ev.id === current.id);
           if (fresh) { current = fresh; renderModalEvent(); }
         });
       })
-      .fail(function (xhr) {
+      .fail(xhr => {
         $('#reserve-error').text(I18n.error(xhr)).removeClass('d-none');
         loadEvents();
       })
-      .always(function () { setBusy(false); });
+      .always(() => setBusy(false));
   });
 
-  I18n.onChange(function () {
+  I18n.onChange(() => {
     renderStatic();
     renderEvents();
     renderModalEvent();
