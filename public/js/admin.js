@@ -1,4 +1,157 @@
 $(function () {
+  function buildShell() {
+    var $navbar = $('<nav class="navbar topbar">').append(
+      $('<div class="container gap-2">').append(
+        $('<span class="navbar-brand text-white mb-0 h1 fs-5">').append(
+          $('<span class="business-name">'),
+          ' · ',
+          $('<span>').attr('data-i18n', 'admin.title')
+        ),
+        $('<div class="d-flex align-items-center gap-2">').append(
+          $('<a class="btn btn-sm btn-outline-light" target="_blank" rel="noopener">').attr('href', '/').append(
+            icon('box-arrow-up-right'),
+            $('<span class="d-none d-sm-inline">').attr('data-i18n', 'admin.viewSite')
+          ),
+          $('<div class="btn-group btn-group-sm lang-switch" role="group">').attr('aria-label', 'Language').append(
+            $('<button type="button" class="btn btn-outline-light">').attr('data-lang', 'bg').text('BG'),
+            $('<button type="button" class="btn btn-outline-light">').attr('data-lang', 'en').text('EN')
+          ),
+          $('<button type="button" class="btn btn-sm btn-light d-none" id="logout">').append(
+            icon('box-arrow-right'),
+            $('<span class="d-none d-sm-inline">').attr('data-i18n', 'admin.logout')
+          )
+        )
+      )
+    );
+
+    var $loginView = $('<section id="login-view" class="container d-none">').append(
+      $('<div class="card admin-login shadow-sm">').append(
+        $('<div class="card-body p-4">').append(
+          $('<h1 class="h4 mb-3">').attr('data-i18n', 'admin.loginTitle'),
+          $('<form id="login-form">').append(
+            $('<div class="mb-3">').append(
+              $('<label for="password" class="form-label">').attr('data-i18n', 'admin.password'),
+              $('<input type="password" class="form-control" id="password" autocomplete="current-password" required>')
+            ),
+            $('<div class="alert alert-danger d-none" id="login-error" role="alert">'),
+            $('<button type="submit" class="btn btn-primary w-100" id="login-submit">').attr('data-i18n', 'admin.login')
+          )
+        )
+      )
+    );
+
+    var $appView = $('<main id="app-view" class="container py-4 d-none">').append(
+      $('<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">').append(
+        $('<h1 class="h3 mb-0">').attr('data-i18n', 'admin.classes'),
+        $('<div class="d-flex flex-wrap gap-2">').append(
+          $('<div class="btn-group btn-group-sm" role="group" id="filter">').append(
+            $('<button type="button" class="btn btn-outline-secondary active">').attr({ 'data-filter': 'all', 'data-i18n': 'admin.filterAll' }),
+            $('<button type="button" class="btn btn-outline-secondary">').attr({ 'data-filter': 'upcoming', 'data-i18n': 'admin.filterUpcoming' }),
+            $('<button type="button" class="btn btn-outline-secondary">').attr({ 'data-filter': 'past', 'data-i18n': 'admin.filterPast' })
+          ),
+          $('<button type="button" class="btn btn-primary btn-sm" id="new-event">').append(
+            icon('plus-lg'),
+            ' ',
+            $('<span>').attr('data-i18n', 'admin.newClass')
+          )
+        )
+      ),
+      $('<div class="card shadow-sm">').append(
+        $('<div class="table-responsive">').append(
+          $('<table class="table table-hover mb-0 events-table">').append(
+            $('<thead>').append(
+              $('<tr>').append(
+                $('<th>').attr('data-i18n', 'admin.colName'),
+                $('<th>').attr('data-i18n', 'admin.colDate'),
+                $('<th class="text-center">').attr('data-i18n', 'admin.colBooked'),
+                $('<th>').attr('data-i18n', 'admin.colStatus')
+              )
+            ),
+            $('<tbody id="events-body">')
+          )
+        ),
+        $('<div id="events-empty" class="text-center text-body-secondary py-5 d-none">').attr('data-i18n', 'admin.noClasses')
+      )
+    );
+
+    var $eventModal = $('<div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">').attr('aria-labelledby', 'eventModalLabel').append(
+      $('<div class="modal-dialog modal-lg modal-dialog-scrollable">').append(
+        $('<div class="modal-content">').append(
+          $('<div class="modal-header">').append(
+            $('<h2 class="modal-title h5" id="eventModalLabel">'),
+            $('<button type="button" class="btn-close">').attr({ 'data-bs-dismiss': 'modal', 'aria-label': 'Close' })
+          ),
+          $('<div class="modal-body">').append(
+            $('<form id="event-form" novalidate>').append(
+              $('<div class="row g-3">').append(
+                $('<div class="col-12">').append(
+                  $('<label for="e-name" class="form-label">').attr('data-i18n', 'admin.name'),
+                  $('<input type="text" class="form-control" id="e-name" maxlength="120" required>'),
+                  $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_name')
+                ),
+                $('<div class="col-12">').append(
+                  $('<label for="e-description" class="form-label">').attr('data-i18n', 'admin.description'),
+                  $('<textarea class="form-control" id="e-description" rows="3" maxlength="2000">')
+                ),
+                $('<div class="col-md-6">').append(
+                  $('<label for="e-start" class="form-label">').attr('data-i18n', 'admin.start'),
+                  $('<input type="datetime-local" class="form-control" id="e-start" required>'),
+                  $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_start')
+                ),
+                $('<div class="col-6 col-md-3">').append(
+                  $('<label for="e-duration" class="form-label">').attr('data-i18n', 'admin.duration'),
+                  $('<input type="number" class="form-control" id="e-duration" min="1" max="1440" step="1" required>'),
+                  $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_duration')
+                ),
+                $('<div class="col-6 col-md-3">').append(
+                  $('<label for="e-capacity" class="form-label">').attr('data-i18n', 'admin.capacity'),
+                  $('<input type="number" class="form-control" id="e-capacity" min="1" max="1000" step="1" required>'),
+                  $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_capacity')
+                )
+              ),
+              $('<div class="alert alert-danger mt-3 mb-0 d-none" id="event-error" role="alert">'),
+              $('<div class="alert alert-success mt-3 mb-0 d-none" id="event-saved" role="status">').attr('data-i18n', 'admin.saved'),
+              $('<div class="d-flex justify-content-between gap-2 mt-3">').append(
+                $('<button type="button" class="btn btn-outline-danger" id="delete-event">').append(
+                  icon('trash'),
+                  ' ',
+                  $('<span>').attr('data-i18n', 'admin.deleteClass')
+                ),
+                $('<button type="submit" class="btn btn-primary ms-auto" id="save-event">').append(
+                  icon('check-lg'),
+                  ' ',
+                  $('<span>').attr('data-i18n', 'admin.save')
+                )
+              )
+            ),
+            $('<section id="signups" class="mt-4 pt-3 border-top">').append(
+              $('<h3 class="h6 mb-3" id="signups-title">'),
+              $('<p class="text-body-secondary mb-0 d-none" id="signups-empty">').attr('data-i18n', 'admin.noSignups'),
+              $('<div class="table-responsive">').append(
+                $('<table class="table table-sm align-middle mb-0" id="signups-table">').append(
+                  $('<thead>').append(
+                    $('<tr>').append(
+                      $('<th>').attr('data-i18n', 'yourName'),
+                      $('<th>').attr('data-i18n', 'email'),
+                      $('<th>').attr('data-i18n', 'phone'),
+                      $('<th>').attr('data-i18n', 'admin.bookedAt'),
+                      $('<th>')
+                    )
+                  ),
+                  $('<tbody id="signups-body">')
+                )
+              )
+            )
+          )
+        )
+      )
+    );
+
+    $('#app').append($navbar, $loginView, $appView, $eventModal);
+  }
+
+  buildShell();
+
   const t = I18n.t;
   const modal = new bootstrap.Modal('#eventModal');
 

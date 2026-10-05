@@ -1,4 +1,92 @@
 $(function () {
+  function buildShell() {
+    var $topbar = $('<div class="topbar py-2">').append(
+      $('<div class="container d-flex align-items-center justify-content-between gap-3">').append(
+        $('<div class="small text-truncate">').append(
+          icon('geo-alt-fill').addClass('me-1'),
+          $('<span id="address">')
+        ),
+        $('<div class="btn-group btn-group-sm lang-switch" role="group">').attr('aria-label', 'Language').append(
+          $('<button type="button" class="btn btn-outline-light">').attr('data-lang', 'bg').text('BG'),
+          $('<button type="button" class="btn btn-outline-light">').attr('data-lang', 'en').text('EN')
+        )
+      )
+    );
+
+    var $hero = $('<header class="hero text-center">').append(
+      $('<div class="container">').append(
+        $('<h1 class="display-5 fw-bold business-name mb-2">'),
+        $('<p class="lead mb-0">').attr('data-i18n', 'heroSubtitle')
+      )
+    );
+
+    var $main = $('<main class="container py-5">').append(
+      $('<h2 class="h3 mb-4">').attr('data-i18n', 'upcomingClasses'),
+      $('<div id="events-state" class="text-center py-5 text-body-secondary">'),
+      $('<div id="events" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">')
+    );
+
+    var $footer = $('<footer class="contact-section py-5">').append(
+      $('<div class="container">').append(
+        $('<h2 class="h4 mb-3">').attr('data-i18n', 'contact'),
+        $('<ul class="list-unstyled mb-0 contact-list">').append(
+          $('<li>').append(icon('person-fill'), $('<span id="contact-name">')),
+          $('<li>').append(icon('envelope-fill'), $('<a id="contact-email">')),
+          $('<li>').append(icon('telephone-fill'), $('<a id="contact-phone">'))
+        )
+      )
+    );
+
+    var $modal = $('<div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">').attr('aria-labelledby', 'reserveModalLabel').append(
+      $('<div class="modal-dialog modal-dialog-centered">').append(
+        $('<div class="modal-content">').append(
+          $('<div class="modal-header">').append(
+            $('<h2 class="modal-title h5" id="reserveModalLabel">').attr('data-i18n', 'reserveTitle'),
+            $('<button type="button" class="btn-close">').attr({ 'data-bs-dismiss': 'modal', 'aria-label': 'Close' })
+          ),
+          $('<div class="modal-body">').append(
+            $('<div class="event-summary mb-3">').append(
+              $('<h3 class="h5 mb-1" id="modal-event-name">'),
+              $('<div class="text-body-secondary small" id="modal-event-when">'),
+              $('<p class="mt-2 mb-0 event-description" id="modal-event-description">'),
+              $('<div class="mt-2" id="modal-event-spots">')
+            ),
+            $('<div class="alert alert-success d-none" id="reserve-success" role="status">').append(
+              icon('check-circle-fill').addClass('me-1'),
+              $('<span>').attr('data-i18n', 'reservationSuccess')
+            ),
+            $('<form id="reserve-form" novalidate>').append(
+              $('<div class="mb-3">').append(
+                $('<label for="r-name" class="form-label">').attr('data-i18n', 'yourName'),
+                $('<input type="text" class="form-control" id="r-name" name="name" maxlength="100" autocomplete="name" required>'),
+                $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_name')
+              ),
+              $('<div class="mb-3">').append(
+                $('<label for="r-email" class="form-label">').attr('data-i18n', 'email'),
+                $('<input type="email" class="form-control" id="r-email" name="email" maxlength="254" autocomplete="email" required>'),
+                $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_email')
+              ),
+              $('<div class="mb-3">').append(
+                $('<label for="r-phone" class="form-label">').attr('data-i18n', 'phone'),
+                $('<input type="tel" class="form-control" id="r-phone" name="phone" maxlength="20" autocomplete="tel" required>'),
+                $('<div class="invalid-feedback">').attr('data-i18n', 'err.invalid_phone')
+              ),
+              $('<div class="alert alert-danger d-none" id="reserve-error" role="alert">'),
+              $('<button type="submit" class="btn btn-primary w-100" id="reserve-submit">').append(
+                $('<span class="spinner-border spinner-border-sm me-1 d-none">').attr('aria-hidden', 'true'),
+                $('<span>').attr('data-i18n', 'confirmBooking')
+              )
+            )
+          )
+        )
+      )
+    );
+
+    $('#app').append($topbar, $hero, $main, $footer, $modal);
+  }
+
+  buildShell();
+
   const cfg = window.SITE_CONFIG;
   const t = I18n.t;
   const modal = new bootstrap.Modal('#reserveModal');
