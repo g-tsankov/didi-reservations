@@ -13,6 +13,12 @@
       "skillPath": "skills/bmad-agent-dev/SKILL.md",
       "computedHash": "f45b6cc89ff9d97de05f6a861dc5b1c60cc54d7d6f69ddf439cd222ef55c57b8"
     },
+    "bmad-agent-ux-designer": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-agent-ux-designer/SKILL.md",
+      "computedHash": "c85affb3285d78cdaf45e88a2d5899ef4940df55e2a41c2a334541ba7626db95"
+    },
     "bmad-architecture": {
       "source": "bmad-code-org/BMAD-METHOD",
       "sourceType": "github",
@@ -30,6 +36,12 @@
       "sourceType": "github",
       "skillPath": "skills/bmad-project-context/SKILL.md",
       "computedHash": "e9d0115ea9457e7bfbda26329a75b11d67bf3de146b74821af327525b69ea571"
+    },
+    "bmad-ux": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-ux/SKILL.md",
+      "computedHash": "00ae77d0fc6407185f7959c49f651e5cfe1aaa6a2c2c8b38ecb6883f07faee79"
     },
     "bmod-core-tools": {
       "source": "bmad-code-org/BMAD-METHOD",
