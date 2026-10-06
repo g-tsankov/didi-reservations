@@ -1,5 +1,5 @@
 ---
 type: initiative
-title: ES6 Migration
+title: UI Overhaul
 parent: none
 ---
