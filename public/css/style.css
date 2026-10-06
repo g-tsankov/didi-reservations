@@ -113,6 +113,17 @@ main { flex: 1 0 auto; }
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  position: relative;
+}
+
+.nav-address {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .nav-brand {
