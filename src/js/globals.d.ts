@@ -79,7 +79,10 @@ type TranslationKey =
   | 'admin.signups'
   | 'admin.noSignups'
   | 'admin.bookedAt'
-  | 'admin.remove';
+  | 'admin.remove'
+  | 'themeSwitcherLabel'
+  | 'themeLight'
+  | 'themeDark';
 
 interface SiteConfig {
   businessName: string;
@@ -110,12 +113,18 @@ interface TimeModule {
   longDate(ms: number, withYear?: boolean): string;
 }
 
+interface ThemeModule {
+  apply(): void;
+  readonly current: 'dark' | 'light';
+}
+
 // Global Window augmentation.
 interface Window {
   SITE_CONFIG: SiteConfig;
   TRANSLATIONS: Record<string, Record<TranslationKey, string>>;
   I18n: I18nModule;
   Time: TimeModule;
+  Theme: ThemeModule;
   icon: (name: string) => JQuery;
 }
 
@@ -124,4 +133,5 @@ declare const SITE_CONFIG: SiteConfig;
 declare const TRANSLATIONS: Record<string, Record<TranslationKey, string>>;
 declare const I18n: I18nModule;
 declare const Time: TimeModule;
+declare const Theme: ThemeModule;
 declare function icon(name: string): JQuery;

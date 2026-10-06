@@ -143,3 +143,47 @@ window.Time = (function (): TimeModule {
 })();
 
 window.icon = (name: string): JQuery => $('<i class="bi" aria-hidden="true"></i>').addClass(`bi-${name}`);
+
+window.Theme = (function (): ThemeModule {
+  const STORAGE_KEY = 'theme';
+  type ThemeValue = 'dark' | 'light';
+  let current: ThemeValue = 'dark';
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    current = saved === 'light' ? 'light' : 'dark';
+  } catch (e) { /* storage unavailable */ }
+
+  function apply(): void {
+    if (current === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    $('.theme-switch [data-theme-btn]').each(function (this: HTMLElement) {
+      const btn = $(this).data('theme-btn') as string;
+      const active = btn === current;
+      const label = btn === 'light' ? I18n.t('themeLight') : I18n.t('themeDark');
+      $(this).toggleClass('active', active).attr('aria-pressed', String(active)).attr('aria-label', label);
+    });
+    $('.theme-switch').attr('aria-label', I18n.t('themeSwitcherLabel'));
+  }
+
+  function set(value: ThemeValue): void {
+    if (value === current) return;
+    current = value;
+    try { localStorage.setItem(STORAGE_KEY, current); } catch (e) { /* storage unavailable */ }
+    apply();
+  }
+
+  $(document).on('click', '.theme-switch [data-theme-btn]', function (this: HTMLElement) {
+    set($(this).data('theme-btn') as ThemeValue);
+  });
+
+  apply();
+
+  return {
+    apply,
+    get current() { return current; },
+  };
+})();

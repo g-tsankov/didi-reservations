@@ -96,6 +96,7 @@ class AppPage {
     const t = I18n.t;
     document.title = `${cfg.businessName} · ${t('pageTitle')}`;
     $('.business-name').text(cfg.businessName);
+    $('#nav-address').text(cfg.address);
     $('#contact-name').text(cfg.contact.name);
     $('#contact-email').text(cfg.contact.email).attr('href', `mailto:${cfg.contact.email}`);
     $('#contact-phone').text(cfg.contact.phone).attr('href', `tel:${cfg.contact.phone.replace(/[^+\d]/g, '')}`);
@@ -104,6 +105,7 @@ class AppPage {
       $(this).attr('aria-current', isActive ? 'true' : null);
     });
     $('.lang-switch').attr('aria-label', t('langSwitcherLabel'));
+    Theme.apply();
   }
 
   private spotsText(n: number): string {

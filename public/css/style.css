@@ -34,6 +34,26 @@
   --bs-border-color: var(--border-subtle);
 }
 
+:root[data-theme="light"] {
+  --surface-base: #fdf8f5;
+  --surface-raised: #ffffff;
+  --surface-overlay: #fff4ef;
+  --ink-primary: #1a0a12;
+  --ink-secondary: #6b3550;
+  --ink-disabled: #9e6b7e;
+  --accent: #8b2255;
+  --accent-hover: #a02868;
+  --accent-on: #ffffff;
+  --border-subtle: rgba(139, 34, 85, 0.12);
+  --border-accent: rgba(139, 34, 85, 0.35);
+  --success: #2e7d5a;
+  --success-surface: rgba(46, 125, 90, 0.10);
+  --error: #c0392b;
+  --error-surface: rgba(192, 57, 43, 0.10);
+  --bs-primary-rgb: 139, 34, 85;
+  --ink-disabled-rgb: 158, 107, 126;
+}
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -137,7 +157,7 @@ main { flex: 1 0 auto; }
   text-overflow: ellipsis;
 }
 
-.lang-switch .btn {
+.lang-switch .btn, .theme-switch .btn {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -149,7 +169,9 @@ main { flex: 1 0 auto; }
 }
 
 .lang-switch .btn.active,
-.lang-switch .btn[aria-current="true"] {
+.lang-switch .btn[aria-current="true"],
+.theme-switch .btn.active,
+.theme-switch .btn[aria-pressed="true"] {
   color: var(--accent);
   border-color: var(--border-accent);
   background: transparent;
