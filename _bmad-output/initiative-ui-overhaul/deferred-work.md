@@ -15,3 +15,11 @@
 - source_plan: `_bmad-output/initiative-es6-migration/plan-migrate-frontend-to-typescript.md`
   summary: Verify and commit removal of `public/js/*.js` compiled artifacts from git tracking
   evidence: The TypeScript migration staged `git rm --cached public/js/*.js` and added `public/js/*.js` to `.gitignore`, but the deletion has not been committed. Before closing the migration, confirm that the `[build]` section in `wrangler.toml` is sufficient for Cloudflare Pages to regenerate the files at deploy time, that `npm run dev` works from a clean tree with no pre-built `.js` files present, and then commit the removal so the compiled artifacts are fully out of the repository history going forward.
+
+- source_plan: `_bmad-output/initiative-ui-overhaul/plan-localize-cdn-resources.md`
+  summary: Update AGENTS.md paths for config and i18n from `public/js/` outputs to `src/js/` TypeScript sources
+  evidence: AGENTS.md still lists `public/js/config.js` and `public/js/i18n.js` as the canonical editable files, but Vite now bundles from `src/js/config.ts` and `src/js/i18n.ts`. Any developer following AGENTS.md guidance would edit the wrong files. Fix involves updating AGENTS.md (agent-context file).
+
+- source_plan: `_bmad-output/initiative-ui-overhaul/plan-localize-cdn-resources.md`
+  summary: Verify `$`/`jQuery`/`bootstrap` globals injected correctly under Vite 8 / rolldown via browser testing
+  evidence: `@rollup/plugin-inject` lacks a rolldown peer-dep declaration; Vite 8 runs rolldown under the hood. Build exits 0 and the PREFER_BUILTIN_FEATURE warning is advisory, suggesting compatibility holds — but globals can only be fully confirmed by opening `http://localhost:8788` and exercising interactive features (modal open/close, form submission, AJAX calls). If globals are broken, all interactive functionality on both pages fails.

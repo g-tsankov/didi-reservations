@@ -4,4 +4,4 @@ node_modules/
 .vscode/
 .idea/
 _bmad/render/
-public/js/*.js
+dist/

@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
-    "rootDir": "src/js",
-    "outDir": "public/js",
     "target": "ES2020",
+    "module": "ESNext",
     "lib": ["DOM", "ES2020"],
     "strict": true,
-    "moduleResolution": "node",
-    "noEmitOnError": true
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/js/*"]
+    }
   },
-  "include": ["src/js/**/*.ts"]
+  "include": ["src/js/**/*.ts", "public/js/**/*.ts"]
 }

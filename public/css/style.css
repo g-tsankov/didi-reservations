@@ -548,9 +548,27 @@ main { flex: 1 0 auto; }
   margin: 4rem auto;
 }
 
+.events-table,
+#signups-table {
+  --bs-table-color: var(--ink-primary);
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--border-subtle);
+  --bs-table-hover-color: var(--ink-primary);
+  --bs-table-hover-bg: var(--surface-raised);
+  --bs-table-striped-color: var(--ink-primary);
+  color: var(--ink-primary);
+}
+
+.events-table th,
+#signups-table th {
+  color: var(--ink-secondary);
+  border-bottom-color: var(--border-subtle);
+}
+
 .events-table tbody tr { cursor: pointer; }
-.events-table tbody tr.is-past td { color: var(--bs-secondary-color); }
-.events-table td { vertical-align: middle; }
+.events-table tbody tr.is-past td { color: var(--ink-disabled); }
+.events-table td,
+#signups-table td { vertical-align: middle; }
 
 /* ---- Onboarding tooltip ---- */
 
