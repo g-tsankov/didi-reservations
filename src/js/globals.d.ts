@@ -3,6 +3,12 @@
 type TranslationKey =
   | 'pageTitle'
   | 'heroSubtitle'
+  | 'heroTagline'
+  | 'heroCta'
+  | 'studioBlurb'
+  | 'langSwitcherLabel'
+  | 'fullLabel'
+  | 'pastClass'
   | 'upcomingClasses'
   | 'loading'
   | 'noEvents'

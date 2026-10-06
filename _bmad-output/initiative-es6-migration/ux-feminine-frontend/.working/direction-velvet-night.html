@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<!-- Velvet Night — nightclub glamour, velvet curtain, intimate luxury. For the Glamorous/Luxe theme. -->
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Didi Classes — Velvet Night</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+
+    /* === TOKENS ===
+       --bg:          #180f1e  (deep near-black)
+       --surface:     #241228  (dark plum card surface)
+       --surface-2:   #2e1a38  (slightly lighter surface)
+       --accent:      #c49a8a  (rose gold)
+       --accent-2:    #d4b896  (gold shimmer)
+       --text-primary:#f0e8e0
+       --text-sec:    #c49a8a
+       --text-dim:    #8a7a70
+       --border:      rgba(196,154,138,0.3)
+       --glow:        rgba(196,154,138,0.15)
+    */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #180f1e;
+      --surface: #241228;
+      --surface-2: #2e1a38;
+      --accent: #c49a8a;
+      --accent-2: #d4b896;
+      --text-primary: #f0e8e0;
+      --text-sec: #c49a8a;
+      --text-dim: #8a7a70;
+      --border: rgba(196,154,138,0.3);
+      --glow: rgba(196,154,138,0.15);
+      --radius: 1rem;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* Direction banner */
+    .direction-banner {
+      background: var(--accent);
+      color: var(--bg);
+      text-align: center;
+      padding: 0.5rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(24,15,30,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .lang-switch {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .lang-switch a {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .lang-switch a.active,
+    .lang-switch a:hover { color: var(--accent); }
+
+    .lang-switch span { color: var(--border); font-size: 0.65rem; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 4rem 2rem;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, rgba(196,154,138,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(180,100,160,0.08) 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, #200d2a 100%);
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c49a8a' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      padding: 0.35rem 1.2rem;
+      border-radius: 999px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-dim);
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-primary-gold {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 1rem 2.5rem;
+      border-radius: 999px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary-gold:hover {
+      background: var(--accent-2);
+      box-shadow: 0 0 24px rgba(196,154,138,0.4);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    /* Classes section */
+    .classes-section {
+      padding: 5rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 3rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 300;
+      color: var(--text-primary);
+    }
+
+    /* Event card */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .event-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 24px var(--glow);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(196,154,138,0.25);
+    }
+
+    .card-accent-stripe {
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .date-badge {
+      flex: 0 0 auto;
+      width: 56px;
+      height: 60px;
+      background: rgba(196,154,138,0.12);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.1rem;
+    }
+
+    .date-day {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--accent);
+    }
+
+    .date-month {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .card-meta { flex: 1; }
+
+    .card-class-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-time {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+    }
+
+    .card-details {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .detail-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .detail-value {
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+
+    .spots-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: rgba(196,154,138,0.15);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .btn-book {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.75rem;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-align: center;
+    }
+
+    .btn-book:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Modal snippet */
+    .modal-section {
+      padding: 0 2rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .modal-snippet-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .modal-snippet {
+      max-width: 440px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: 1rem;
+      cursor: pointer;
+      background: transparent;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-class-card {
+      background: rgba(196,154,138,0.08);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-class-name {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-class-when {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    .form-group { margin-bottom: 0; }
+
+    .form-label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus { border-color: var(--accent); }
+
+    @media (max-width: 480px) {
+      nav { padding: 1rem; }
+      .hero h1 { font-size: 3rem; }
+      .classes-section, .modal-section { padding: 3rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="direction-banner">Velvet Night — тъмен гламур, кадифена завеса, интимен лукс</div>
+
+  <nav>
+    <a href="#" class="nav-logo">Didi <em style="font-style:italic;color:var(--accent)">Classes</em></a>
+    <div class="lang-switch">
+      <a href="#" class="active">BG</a>
+      <span>/</span>
+      <a href="#">EN</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Студио за поудан&#774;с</div>
+      <h1>Didi<br><em>Classes</em></h1>
+      <p class="hero-tagline">Открий силата в себе си.</p>
+      <a href="#classes" class="btn-primary-gold">Разгледай часовете</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Надолу</span>
+    </div>
+  </section>
+
+  <section class="classes-section" id="classes">
+    <div class="section-header">
+      <div class="section-eyebrow">Предстоящи часове</div>
+      <h2 class="section-title">Предстоящи<br>часове</h2>
+    </div>
+    <div class="cards-grid">
+      <div class="event-card">
+        <div class="card-accent-stripe"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="date-badge">
+              <span class="date-day">14</span>
+              <span class="date-month">Окт</span>
+            </div>
+            <div class="card-meta">
+              <div class="card-class-name">Pole Dance — ниво 1</div>
+              <div class="card-time">19:00 – 20:30</div>
+            </div>
+          </div>
+          <div class="card-details">
+            <div class="detail-item">
+              <span class="detail-label">Инструктор</span>
+              <span class="detail-value">Диди</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Места</span>
+              <span class="detail-value"><span class="spots-badge">3 свободни</span></span>
+            </div>
+          </div>
+          <button class="btn-book">Запази място</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="modal-section">
+    <div class="modal-snippet-label">Примерен диалог за резервация</div>
+    <div class="modal-snippet">
+      <div class="modal-header">
+        <span class="modal-title">Запази място</span>
+        <button class="modal-close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-class-card">
+          <div class="modal-class-name">Pole Dance — ниво 1</div>
+          <div class="modal-class-when">14 октомври · 19:00 – 20:30 · Инструктор: Диди</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="v1-name">Твоето ime</label>
+          <input type="text" id="v1-name" class="form-input" placeholder="Мария Иванова">
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

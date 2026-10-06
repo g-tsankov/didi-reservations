@@ -14,6 +14,7 @@ class AppPage {
   private events: ClassEvent[] | null = null;   // null = not loaded yet
   private loadFailed = false;
   private current: ClassEvent | null = null;  // event shown in the popup
+  private _triggerEl: Element | null = null;
 
   constructor() {
     this.modal = new bootstrap.Modal('#reserveModal');
@@ -65,6 +66,7 @@ class AppPage {
         .done(() => {
           $(form).addClass('d-none');
           $('#reserve-success').removeClass('d-none');
+          $('#reserve-dismiss').one('click', () => this.modal.hide());
           this.loadEvents().done(() => {
             const fresh = this.events && this.current ? this.events.find(ev => ev.id === this.current!.id) : undefined;
             if (fresh) { this.current = fresh; this.renderModalEvent(); }
@@ -93,11 +95,15 @@ class AppPage {
     const cfg = window.SITE_CONFIG;
     const t = I18n.t;
     document.title = `${cfg.businessName} · ${t('pageTitle')}`;
-    $('#address').text(cfg.address);
     $('.business-name').text(cfg.businessName);
     $('#contact-name').text(cfg.contact.name);
     $('#contact-email').text(cfg.contact.email).attr('href', `mailto:${cfg.contact.email}`);
     $('#contact-phone').text(cfg.contact.phone).attr('href', `tel:${cfg.contact.phone.replace(/[^+\d]/g, '')}`);
+    $('.lang-switch [data-lang]').each(function () {
+      const isActive = $(this).data('lang') === I18n.lang;
+      $(this).attr('aria-current', isActive ? 'true' : null);
+    });
+    $('.lang-switch').attr('aria-label', t('langSwitcherLabel'));
   }
 
   private spotsText(n: number): string {
@@ -113,7 +119,9 @@ class AppPage {
     const $badge = $('<span class="badge rounded-pill">');
     switch (this.statusOf(ev)) {
       case 'open':
-        return $badge.addClass(ev.spotsLeft <= 3 ? 'text-bg-warning' : 'text-bg-success').text(this.spotsText(ev.spotsLeft));
+        return $badge.addClass(ev.spotsLeft <= 3 ? 'text-bg-warning' : 'text-bg-success')
+          .text(this.spotsText(ev.spotsLeft))
+          .attr('aria-label', this.spotsText(ev.spotsLeft));
       case 'full':
         return $badge.addClass('text-bg-secondary').text(I18n.t('full'));
       default:
@@ -150,7 +158,10 @@ class AppPage {
         $('<div class="card-footer">').append(I18n.t('bookNow'), ' ', icon('arrow-right')),
       );
     } else {
-      $card.addClass('is-unavailable').attr('aria-disabled', 'true');
+      const status = this.statusOf(ev);
+      const footerLabel = status === 'full' ? I18n.t('fullLabel') : I18n.t('pastClass');
+      $card.addClass('is-unavailable').attr('aria-disabled', 'true')
+        .append($('<div class="card-footer">').text(footerLabel));
     }
 
     return $('<div class="col">').append($card);
@@ -168,9 +179,10 @@ class AppPage {
       return;
     }
     if (this.events === null) {
-      $state.append($('<div class="spinner-border" role="status">').append(
-        $('<span class="visually-hidden">').text(I18n.t('loading')),
-      ));
+      $state.addClass('d-none');
+      for (let i = 0; i < 3; i++) {
+        $list.append($('<div class="col">').append($('<div class="skeleton-card">')));
+      }
       return;
     }
     if (!this.events.length) {
@@ -213,6 +225,10 @@ class AppPage {
     $(form).removeClass('was-validated d-none');
     $('#reserve-error, #reserve-success').addClass('d-none');
     this.renderModalEvent();
+    this._triggerEl = document.activeElement;
+    $('#reserveModal').one('hidden.bs.modal', () => {
+      if (this._triggerEl) $(this._triggerEl).trigger('focus');
+    });
     this.modal.show();
   }
 
