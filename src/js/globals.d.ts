@@ -82,7 +82,9 @@ type TranslationKey =
   | 'admin.remove'
   | 'themeSwitcherLabel'
   | 'themeLight'
-  | 'themeDark';
+  | 'themeDark'
+  | 'onboardingTip'
+  | 'onboardingDismiss';
 
 interface SiteConfig {
   businessName: string;

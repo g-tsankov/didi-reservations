@@ -552,6 +552,46 @@ main { flex: 1 0 auto; }
 .events-table tbody tr.is-past td { color: var(--bs-secondary-color); }
 .events-table td { vertical-align: middle; }
 
+/* ---- Onboarding tooltip ---- */
+
+.onboarding-anchor {
+  position: relative;
+  display: block;
+  width: 0;
+  overflow: visible;
+  align-self: stretch;
+}
+
+.onboarding-tip {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  padding: 0.85rem 1rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--rounded-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  z-index: 1080;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+}
+
+.onboarding-tip::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  margin-left: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--surface-raised);
+  border-top: 1px solid var(--border-accent);
+  border-left: 1px solid var(--border-accent);
+  transform: rotate(45deg);
+}
+
 /* ---- Future theme extension point ---- */
 /*
 [data-theme="rosy-bold"] {

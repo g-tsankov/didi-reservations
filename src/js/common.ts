@@ -192,3 +192,32 @@ window.Theme = (function (): ThemeModule {
     get current() { return current; },
   };
 })();
+
+(function () {
+  const DISMISSED_KEY = 'onboarding_dismissed';
+  const COUNT_KEY = 'onboarding_count';
+  const MAX_SHOWS = 3;
+
+  try {
+    if (localStorage.getItem(DISMISSED_KEY) === '1') return;
+    const count = parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+    if (count >= MAX_SHOWS) return;
+    localStorage.setItem(COUNT_KEY, String(count + 1));
+  } catch (e) {
+    return;
+  }
+
+  $('#onboarding-tip').removeClass('d-none');
+
+  $(document).on('click', '#onboarding-dismiss', function () {
+    try { localStorage.setItem(DISMISSED_KEY, '1'); } catch (e) { /* storage unavailable */ }
+    $('#onboarding-tip').addClass('d-none');
+  });
+
+  $(document).on('click', function (e: JQuery.ClickEvent) {
+    if ($('#onboarding-tip').hasClass('d-none')) return;
+    if (!($(e.target as HTMLElement).closest('#onboarding-tip').length)) {
+      $('#onboarding-tip').addClass('d-none');
+    }
+  });
+})();
