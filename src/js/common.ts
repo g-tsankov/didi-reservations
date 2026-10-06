@@ -43,10 +43,11 @@ window.I18n = (function (): I18nModule {
     $('[data-i18n-placeholder]').each(function (this: HTMLElement) {
       $(this).attr('placeholder', t($(this).data('i18n-placeholder') as TranslationKey));
     });
+    $('.lang-switch .dropdown-toggle').text(lang.toUpperCase());
     $('.lang-switch [data-lang]').each(function (this: HTMLElement) {
-      const active = $(this).data('lang') === lang;
-      $(this).toggleClass('active', active).attr('aria-pressed', String(active));
+      $(this).toggleClass('active', $(this).data('lang') === lang);
     });
+    $('.lang-switch').attr('aria-label', t('langSwitcherLabel'));
   }
 
   function set(newLang: string): void {
@@ -57,9 +58,13 @@ window.I18n = (function (): I18nModule {
     listeners.forEach(fn => fn(lang));
   }
 
-  $(document).on('click', '.lang-switch [data-lang]', function (this: HTMLElement) {
+  $(document).on('click', '.lang-switch [data-lang]', function (this: HTMLElement, e: JQuery.ClickEvent) {
+    e.preventDefault();
     set($(this).data('lang') as string);
   });
+
+  // Sync the dropdown toggle text immediately from the stored lang (scripts run after body so DOM exists).
+  $('.lang-switch .dropdown-toggle').text(lang.toUpperCase());
 
   return {
     t,
@@ -160,11 +165,10 @@ window.Theme = (function (): ThemeModule {
     } else {
       document.documentElement.removeAttribute('data-theme');
     }
+    const iconClass = current === 'light' ? 'bi-sun-fill' : 'bi-moon-stars-fill';
+    $('.theme-switch .dropdown-toggle i').attr('class', `bi ${iconClass}`).attr('aria-hidden', 'true');
     $('.theme-switch [data-theme-btn]').each(function (this: HTMLElement) {
-      const btn = $(this).data('theme-btn') as string;
-      const active = btn === current;
-      const label = btn === 'light' ? I18n.t('themeLight') : I18n.t('themeDark');
-      $(this).toggleClass('active', active).attr('aria-pressed', String(active)).attr('aria-label', label);
+      $(this).toggleClass('active', $(this).data('theme-btn') === current);
     });
     $('.theme-switch').attr('aria-label', I18n.t('themeSwitcherLabel'));
   }
@@ -176,7 +180,8 @@ window.Theme = (function (): ThemeModule {
     apply();
   }
 
-  $(document).on('click', '.theme-switch [data-theme-btn]', function (this: HTMLElement) {
+  $(document).on('click', '.theme-switch [data-theme-btn]', function (this: HTMLElement, e: JQuery.ClickEvent) {
+    e.preventDefault();
     set($(this).data('theme-btn') as ThemeValue);
   });
 

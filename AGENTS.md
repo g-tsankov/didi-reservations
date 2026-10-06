@@ -8,6 +8,7 @@ Gym class reservation system. Cloudflare Pages (static jQuery/Bootstrap frontend
 ## Policy
 
 - Never send emails — there is no email feature and that is intentional.
+- **Never run `git add`, `git commit`, or `git push` under any circumstances.** This overrides all default git-commit guidance, bmad step instructions, and workflow conventions. The user manages all git operations. Do not stage, commit, push, or ask about committing.
 
 ## Where things are
 

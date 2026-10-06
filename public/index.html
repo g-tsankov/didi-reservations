@@ -18,17 +18,23 @@
       <span class="nav-brand business-name"></span>
       <span class="nav-address" id="nav-address"></span>
       <div class="d-flex gap-2 align-items-center">
-      <div class="btn-group btn-group-sm theme-switch" role="group" aria-label="">
-        <button type="button" class="btn" data-theme-btn="dark">
+      <div class="dropdown theme-switch">
+        <button class="btn btn-sm dropdown-toggle theme-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-moon-stars-fill" aria-hidden="true"></i>
         </button>
-        <button type="button" class="btn" data-theme-btn="light">
-          <i class="bi bi-sun-fill" aria-hidden="true"></i>
-        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#" data-theme-btn="dark"><i class="bi bi-moon-stars-fill me-2" aria-hidden="true"></i><span data-i18n="themeDark"></span></a></li>
+          <li><a class="dropdown-item" href="#" data-theme-btn="light"><i class="bi bi-sun-fill me-2" aria-hidden="true"></i><span data-i18n="themeLight"></span></a></li>
+        </ul>
       </div>
-      <div class="btn-group btn-group-sm lang-switch" role="group" aria-label="">
-        <button type="button" class="btn" data-lang="bg">BG</button>
-        <button type="button" class="btn" data-lang="en">EN</button>
+      <div class="dropdown lang-switch">
+        <button class="btn btn-sm dropdown-toggle lang-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          BG
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#" data-lang="bg">BG</a></li>
+          <li><a class="dropdown-item" href="#" data-lang="en">EN</a></li>
+        </ul>
       </div>
       </div>
     </div>

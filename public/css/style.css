@@ -157,7 +157,9 @@ main { flex: 1 0 auto; }
   text-overflow: ellipsis;
 }
 
-.lang-switch .btn, .theme-switch .btn {
+/* btn-group variant kept for admin/index.html which still uses the old structure */
+.lang-switch .btn,
+.theme-switch .btn {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -175,6 +177,48 @@ main { flex: 1 0 auto; }
   color: var(--accent);
   border-color: var(--border-accent);
   background: transparent;
+}
+
+.lang-switch .dropdown-toggle,
+.theme-switch .dropdown-toggle {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-disabled);
+  background: transparent;
+  border-color: transparent;
+  padding: 0.25rem 0.65rem;
+}
+
+.lang-switch .dropdown-toggle:hover,
+.theme-switch .dropdown-toggle:hover,
+.lang-switch .dropdown-toggle:focus-visible,
+.theme-switch .dropdown-toggle:focus-visible {
+  color: var(--accent);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.lang-switch .dropdown-menu,
+.theme-switch .dropdown-menu {
+  background: var(--surface-raised);
+  border-color: var(--border-subtle);
+  min-width: 8rem;
+}
+
+.lang-switch .dropdown-item,
+.theme-switch .dropdown-item {
+  color: var(--ink-primary);
+  font-size: 13px;
+}
+
+.lang-switch .dropdown-item:hover,
+.theme-switch .dropdown-item:hover,
+.lang-switch .dropdown-item.active,
+.theme-switch .dropdown-item.active {
+  background: var(--surface-overlay);
+  color: var(--accent);
 }
 
 /* ---- Hero ---- */

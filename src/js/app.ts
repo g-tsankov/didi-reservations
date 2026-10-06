@@ -100,11 +100,6 @@ class AppPage {
     $('#contact-name').text(cfg.contact.name);
     $('#contact-email').text(cfg.contact.email).attr('href', `mailto:${cfg.contact.email}`);
     $('#contact-phone').text(cfg.contact.phone).attr('href', `tel:${cfg.contact.phone.replace(/[^+\d]/g, '')}`);
-    $('.lang-switch [data-lang]').each(function () {
-      const isActive = $(this).data('lang') === I18n.lang;
-      $(this).attr('aria-current', isActive ? 'true' : null);
-    });
-    $('.lang-switch').attr('aria-label', t('langSwitcherLabel'));
     Theme.apply();
   }
 
