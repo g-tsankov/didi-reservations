@@ -1,5 +1,7 @@
+import type { SiteConfig } from './types';
+
 // Edit these to change what's shown on the public site.
-window.SITE_CONFIG = {
+export const SITE_CONFIG: SiteConfig = {
   businessName: 'Didi Classes',
   address: 'ul. Example 1, 1000 Sofia, Bulgaria',
   contact: {

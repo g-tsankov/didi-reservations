@@ -1,6 +1,6 @@
-/// <reference types="jquery" />
+// Shared types for the Vue code and (via globals.d.ts) the legacy admin scripts.
 
-type TranslationKey =
+export type TranslationKey =
   | 'pageTitle'
   | 'heroSubtitle'
   | 'heroTagline'
@@ -10,7 +10,6 @@ type TranslationKey =
   | 'fullLabel'
   | 'pastClass'
   | 'upcomingClasses'
-  | 'loading'
   | 'noEvents'
   | 'loadError'
   | 'retry'
@@ -86,7 +85,12 @@ type TranslationKey =
   | 'onboardingTip'
   | 'onboardingDismiss';
 
-interface SiteConfig {
+export type Lang = 'bg' | 'en';
+export type ThemeValue = 'dark' | 'light';
+
+export type Translations = Record<Lang, Record<TranslationKey, string>>;
+
+export interface SiteConfig {
   businessName: string;
   address: string;
   contact: {
@@ -97,16 +101,19 @@ interface SiteConfig {
   defaultLanguage: string;
 }
 
-interface I18nModule {
-  t(key: TranslationKey, vars?: Record<string, string | number>): string;
-  has(key: string): boolean;
-  error(xhrOrCode: unknown): string;
-  apply(): void;
-  onChange(fn: (lang: string) => void): void;
-  readonly lang: string;
+/** A class as returned by GET /api/events. Timestamps are epoch milliseconds. */
+export interface ClassEvent {
+  id: number;
+  name: string;
+  description: string;
+  startsAt: number;
+  endsAt: number;
+  durationMinutes: number;
+  spotsLeft: number;
+  bookingOpen: boolean;
 }
 
-interface TimeModule {
+export interface TimeModule {
   fromSofiaInput(value: string | undefined | null): number | null;
   toSofiaInput(ms: number): string;
   format(ms: number, options?: Intl.DateTimeFormatOptions): string;
@@ -115,25 +122,28 @@ interface TimeModule {
   longDate(ms: number, withYear?: boolean): string;
 }
 
-interface ThemeModule {
-  apply(): void;
-  readonly current: 'dark' | 'light';
+/** A class as returned by the admin API. Timestamps are epoch milliseconds. */
+export interface AdminEvent {
+  id: number;
+  name: string;
+  description: string;
+  startsAt: number;
+  endsAt: number;
+  durationMinutes: number;
+  booked: number;
+  capacity: number;
 }
 
-// Global Window augmentation.
-interface Window {
-  SITE_CONFIG: SiteConfig;
-  TRANSLATIONS: Record<string, Record<TranslationKey, string>>;
-  I18n: I18nModule;
-  Time: TimeModule;
-  Theme: ThemeModule;
-  icon: (name: string) => JQuery;
+export interface Reservation {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: number;
 }
 
-// Shorthand ambient declarations so consuming .ts files can omit `window.`.
-declare const SITE_CONFIG: SiteConfig;
-declare const TRANSLATIONS: Record<string, Record<TranslationKey, string>>;
-declare const I18n: I18nModule;
-declare const Time: TimeModule;
-declare const Theme: ThemeModule;
-declare function icon(name: string): JQuery;
+/** GET/PUT /api/admin/events/:id and POST /api/admin/events. */
+export interface EventDetails {
+  event: AdminEvent;
+  reservations: Reservation[];
+}

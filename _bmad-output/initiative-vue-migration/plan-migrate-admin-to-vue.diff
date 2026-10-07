@@ -1,0 +1,1368 @@
+diff -ruN '--exclude=package-lock.json' pre-impl/package.json post-impl/package.json
+--- pre-impl/package.json	2026-10-07 09:37:14.000000000 +0300
++++ post-impl/package.json	2026-10-07 10:13:13.000000000 +0300
+@@ -17,9 +17,7 @@
+   },
+   "devDependencies": {
+     "@popperjs/core": "^2.11.8",
+-    "@rollup/plugin-inject": "^5.0.5",
+     "@types/bootstrap": "^5.2.10",
+-    "@types/jquery": "^3.5.32",
+     "@types/node": "^26.6.4",
+     "@vitejs/plugin-vue": "^6.0.9",
+     "typescript": "^5.7.2",
+@@ -32,7 +30,6 @@
+     "bootstrap": "^5.3.8",
+     "bootstrap-icons": "^1.13.1",
+     "bootstrap-vue-next": "^1.2.2",
+-    "jquery": "^4.0.0",
+     "vue": "^3.5.43"
+   }
+ }
+diff -ruN '--exclude=package-lock.json' pre-impl/public/admin/index.html post-impl/public/admin/index.html
+--- pre-impl/public/admin/index.html	2026-10-06 14:59:54.000000000 +0300
++++ post-impl/public/admin/index.html	2026-10-07 10:13:00.000000000 +0300
+@@ -8,156 +8,8 @@
+ </head>
+ <body>
+ 
+-  <nav class="navbar topbar">
+-    <div class="container gap-2">
+-      <span class="navbar-brand text-white mb-0 h1 fs-5">
+-        <span class="business-name"></span> · <span data-i18n="admin.title"></span>
+-      </span>
+-      <div class="d-flex align-items-center gap-2">
+-        <a href="/" class="btn btn-sm btn-outline-light" target="_blank" rel="noopener">
+-          <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+-          <span class="d-none d-sm-inline" data-i18n="admin.viewSite"></span>
+-        </a>
+-        <div class="btn-group btn-group-sm lang-switch" role="group" aria-label="Language">
+-          <button type="button" class="btn btn-outline-light" data-lang="bg">BG</button>
+-          <button type="button" class="btn btn-outline-light" data-lang="en">EN</button>
+-        </div>
+-        <button type="button" class="btn btn-sm btn-light d-none" id="logout">
+-          <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+-          <span class="d-none d-sm-inline" data-i18n="admin.logout"></span>
+-        </button>
+-      </div>
+-    </div>
+-  </nav>
+-
+-  <!-- Login -->
+-  <section id="login-view" class="container d-none">
+-    <div class="card admin-login shadow-sm">
+-      <div class="card-body p-4">
+-        <h1 class="h4 mb-3" data-i18n="admin.loginTitle"></h1>
+-        <form id="login-form">
+-          <div class="mb-3">
+-            <label for="password" class="form-label" data-i18n="admin.password"></label>
+-            <input type="password" class="form-control" id="password" autocomplete="current-password" required>
+-          </div>
+-          <div class="alert alert-danger d-none" id="login-error" role="alert"></div>
+-          <button type="submit" class="btn btn-primary w-100" id="login-submit" data-i18n="admin.login"></button>
+-        </form>
+-      </div>
+-    </div>
+-  </section>
+-
+-  <!-- Event list -->
+-  <main id="app-view" class="container py-4 d-none">
+-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+-      <h1 class="h3 mb-0" data-i18n="admin.classes"></h1>
+-      <div class="d-flex flex-wrap gap-2">
+-        <div class="btn-group btn-group-sm" role="group" id="filter">
+-          <button type="button" class="btn btn-outline-secondary active" data-filter="all" data-i18n="admin.filterAll"></button>
+-          <button type="button" class="btn btn-outline-secondary" data-filter="upcoming" data-i18n="admin.filterUpcoming"></button>
+-          <button type="button" class="btn btn-outline-secondary" data-filter="past" data-i18n="admin.filterPast"></button>
+-        </div>
+-        <button type="button" class="btn btn-primary btn-sm" id="new-event">
+-          <i class="bi bi-plus-lg" aria-hidden="true"></i> <span data-i18n="admin.newClass"></span>
+-        </button>
+-      </div>
+-    </div>
+-
+-    <div class="card shadow-sm">
+-      <div class="table-responsive">
+-        <table class="table table-hover mb-0 events-table">
+-          <thead>
+-            <tr>
+-              <th data-i18n="admin.colName"></th>
+-              <th data-i18n="admin.colDate"></th>
+-              <th class="text-center" data-i18n="admin.colBooked"></th>
+-              <th data-i18n="admin.colStatus"></th>
+-            </tr>
+-          </thead>
+-          <tbody id="events-body"></tbody>
+-        </table>
+-      </div>
+-      <div id="events-empty" class="text-center text-body-secondary py-5 d-none" data-i18n="admin.noClasses"></div>
+-    </div>
+-  </main>
+-
+-  <!-- Create / edit popup -->
+-  <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+-      <div class="modal-content">
+-        <div class="modal-header">
+-          <h2 class="modal-title h5" id="eventModalLabel"></h2>
+-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+-        </div>
+-        <div class="modal-body">
+-          <form id="event-form" novalidate>
+-            <div class="row g-3">
+-              <div class="col-12">
+-                <label for="e-name" class="form-label" data-i18n="admin.name"></label>
+-                <input type="text" class="form-control" id="e-name" maxlength="120" required>
+-                <div class="invalid-feedback" data-i18n="err.invalid_name"></div>
+-              </div>
+-              <div class="col-12">
+-                <label for="e-description" class="form-label" data-i18n="admin.description"></label>
+-                <textarea class="form-control" id="e-description" rows="3" maxlength="2000"></textarea>
+-              </div>
+-              <div class="col-6 col-md-3 d-flex flex-column">
+-                <label for="e-start-date" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.startDate"></label>
+-                <input type="date" class="form-control" id="e-start-date" required>
+-                <div class="invalid-feedback" data-i18n="err.invalid_start"></div>
+-              </div>
+-              <div class="col-6 col-md-3 d-flex flex-column">
+-                <label for="e-start-time" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.startTime"></label>
+-                <input type="time" class="form-control" id="e-start-time" required>
+-                <div class="invalid-feedback" data-i18n="err.invalid_start"></div>
+-              </div>
+-              <div class="col-6 col-md-3 d-flex flex-column">
+-                <label for="e-duration" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.duration"></label>
+-                <input type="number" class="form-control" id="e-duration" min="1" max="1440" step="1" required>
+-                <div class="invalid-feedback" data-i18n="err.invalid_duration"></div>
+-              </div>
+-              <div class="col-6 col-md-3 d-flex flex-column">
+-                <label for="e-capacity" class="form-label flex-grow-1 d-flex align-items-end" data-i18n="admin.capacity"></label>
+-                <input type="number" class="form-control" id="e-capacity" min="1" max="1000" step="1" required>
+-                <div class="invalid-feedback" data-i18n="err.invalid_capacity"></div>
+-              </div>
+-            </div>
+-
+-            <div class="alert alert-danger mt-3 mb-0 d-none" id="event-error" role="alert"></div>
+-            <div class="alert alert-success mt-3 mb-0 d-none" id="event-saved" role="status" data-i18n="admin.saved"></div>
+-
+-            <div class="d-flex justify-content-between gap-2 mt-3">
+-              <button type="button" class="btn btn-outline-danger" id="delete-event">
+-                <i class="bi bi-trash" aria-hidden="true"></i> <span data-i18n="admin.deleteClass"></span>
+-              </button>
+-              <button type="submit" class="btn btn-primary ms-auto" id="save-event">
+-                <i class="bi bi-check-lg" aria-hidden="true"></i> <span data-i18n="admin.save"></span>
+-              </button>
+-            </div>
+-          </form>
+-
+-          <section id="signups" class="mt-4 pt-3 border-top">
+-            <h3 class="h6 mb-3" id="signups-title"></h3>
+-            <p class="text-body-secondary mb-0 d-none" id="signups-empty" data-i18n="admin.noSignups"></p>
+-            <div class="table-responsive">
+-              <table class="table table-sm align-middle mb-0" id="signups-table">
+-                <thead>
+-                  <tr>
+-                    <th data-i18n="yourName"></th>
+-                    <th data-i18n="email"></th>
+-                    <th data-i18n="phone"></th>
+-                    <th data-i18n="admin.bookedAt"></th>
+-                    <th></th>
+-                  </tr>
+-                </thead>
+-                <tbody id="signups-body"></tbody>
+-              </table>
+-            </div>
+-          </section>
+-        </div>
+-      </div>
+-    </div>
+-  </div>
++  <!-- The admin page is a Vue app: src/vue/admin/AdminApp.vue -->
++  <div id="app"></div>
+ 
+   <script type="module" src="/js/entry-admin.ts"></script>
+ </body>
+diff -ruN '--exclude=package-lock.json' pre-impl/public/js/entry-admin.ts post-impl/public/js/entry-admin.ts
+--- pre-impl/public/js/entry-admin.ts	2026-10-06 15:04:40.000000000 +0300
++++ post-impl/public/js/entry-admin.ts	2026-10-07 10:13:00.000000000 +0300
+@@ -1,7 +1,9 @@
+ import 'bootstrap/dist/css/bootstrap.min.css';
++import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
+ import 'bootstrap-icons/font/bootstrap-icons.min.css';
+ 
+-import '@src/config';
+-import '@src/i18n';
+-import '@src/common';
+-import '@src/admin';
++import { createApp } from 'vue';
++import { createBootstrap } from 'bootstrap-vue-next/plugins/createBootstrap';
++import AdminApp from '../../src/vue/admin/AdminApp.vue';
++
++createApp(AdminApp).use(createBootstrap()).mount('#app');
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/admin.ts post-impl/src/js/admin.ts
+--- pre-impl/src/js/admin.ts	2026-10-05 16:33:30.000000000 +0300
++++ post-impl/src/js/admin.ts	1970-01-01 02:00:00.000000000 +0200
+@@ -1,300 +0,0 @@
+-interface AdminEvent {
+-  id: number;
+-  name: string;
+-  description: string;
+-  startsAt: number;
+-  endsAt: number;
+-  durationMinutes: number;
+-  booked: number;
+-  capacity: number;
+-}
+-
+-interface Reservation {
+-  id: number;
+-  name: string;
+-  email: string;
+-  phone: string;
+-  createdAt: number;
+-}
+-
+-interface EventDetails {
+-  event: AdminEvent;
+-  reservations: Reservation[];
+-}
+-
+-class AdminPage {
+-  private modal: bootstrap.Modal;
+-  private events: AdminEvent[] = [];
+-  private filter = 'all';
+-  private current: EventDetails | null = null; // { event, reservations } while editing; null when creating
+-
+-  private readonly STATUS_BADGE: Record<string, [string, TranslationKey]> = {
+-    upcoming: ['text-bg-success', 'admin.statusUpcoming'],
+-    inProgress: ['text-bg-info', 'admin.statusInProgress'],
+-    past: ['text-bg-secondary', 'admin.statusPast'],
+-  };
+-
+-  constructor() {
+-    this.modal = new bootstrap.Modal('#eventModal');
+-
+-    $('#login-form').on('submit', e => {
+-      e.preventDefault();
+-      $('#login-submit').prop('disabled', true);
+-      this.api('POST', '/api/admin/login', { password: $('#password').val() })
+-        .done(() => this.showApp())
+-        .fail((xhr: JQueryXHR) => this.showLogin(I18n.error(xhr)))
+-        .always(() => { $('#login-submit').prop('disabled', false); });
+-    });
+-
+-    $('#logout').on('click', () => {
+-      this.api('POST', '/api/admin/logout').always(() => this.showLogin());
+-    });
+-
+-    $('#filter').on('click', '[data-filter]', (e) => {
+-      const el = e.currentTarget as HTMLElement;
+-      this.filter = $(el).data('filter') as string;
+-      $('#filter [data-filter]').removeClass('active');
+-      $(el).addClass('active');
+-      this.renderTable();
+-    });
+-
+-    $('#events-body').on('click', 'tr', (e) => {
+-      const el = e.currentTarget as HTMLElement;
+-      this.api('GET', `/api/admin/events/${$(el).data('id') as number}`).done((data: EventDetails) => this.openModal(data));
+-    });
+-
+-    $('#new-event').on('click', () => this.openModal(null));
+-
+-    $('#eventModal').on('shown.bs.modal', () => {
+-      if (!this.current) $('#e-name').trigger('focus');
+-    });
+-
+-    $('#event-form').on('submit', (e: JQuery.SubmitEvent) => {
+-      e.preventDefault();
+-      const form = e.currentTarget as HTMLFormElement;
+-      this.clearMessages();
+-
+-      const startsAt = Time.fromSofiaInput(`${$('#e-start-date').val() as string}T${$('#e-start-time').val() as string}`);
+-      if (!form.checkValidity()) {
+-        $(form).addClass('was-validated');
+-        return;
+-      }
+-
+-      const body = {
+-        name: $('#e-name').val() as string,
+-        description: $('#e-description').val() as string,
+-        startsAt: startsAt as number,
+-        durationMinutes: Number($('#e-duration').val()),
+-        capacity: Number($('#e-capacity').val()),
+-      };
+-      const request = this.current
+-        ? this.api('PUT', `/api/admin/events/${this.current.event.id}`, body)
+-        : this.api('POST', '/api/admin/events', body);
+-
+-      $('#save-event').prop('disabled', true);
+-      request
+-        .done((data: EventDetails) => {
+-          this.current = data;
+-          $('#event-form').removeClass('was-validated');
+-          this.fillForm();
+-          this.renderModal();
+-          $('#event-saved').removeClass('d-none');
+-          this.loadEvents();
+-        })
+-        .fail((xhr: JQueryXHR) => {
+-          if (xhr.status !== 401) $('#event-error').text(I18n.error(xhr)).removeClass('d-none');
+-        })
+-        .always(() => { $('#save-event').prop('disabled', false); });
+-    });
+-
+-    $('#delete-event').on('click', () => {
+-      if (!this.current || !window.confirm(I18n.t('admin.confirmDelete'))) return;
+-      this.api('DELETE', `/api/admin/events/${this.current.event.id}`)
+-        .done(() => {
+-          this.modal.hide();
+-          this.loadEvents();
+-        })
+-        .fail((xhr: JQueryXHR) => {
+-          if (xhr.status !== 401) $('#event-error').text(I18n.error(xhr)).removeClass('d-none');
+-        });
+-    });
+-
+-    $('#signups-body').on('click', '.remove-signup', (e) => {
+-      const el = e.currentTarget as HTMLElement;
+-      const $btn = $(el);
+-      if (!window.confirm(I18n.t('admin.confirmRemove', { name: $btn.data('name') as string }))) return;
+-
+-      $btn.prop('disabled', true);
+-      this.api('DELETE', `/api/admin/reservations/${$btn.data('id') as number}`)
+-        .then(() => this.api('GET', `/api/admin/events/${this.current!.event.id}`))
+-        .done((data: EventDetails) => {
+-          this.current = data;
+-          this.renderSignups();
+-          this.loadEvents();
+-        })
+-        .fail((xhr: JQueryXHR) => {
+-          $btn.prop('disabled', false);
+-          if (xhr.status !== 401) $('#event-error').text(I18n.error(xhr)).removeClass('d-none');
+-        });
+-    });
+-
+-    // ---- Start-up ----
+-
+-    I18n.onChange(() => {
+-      document.title = `${I18n.t('admin.title')} · ${SITE_CONFIG.businessName}`;
+-      this.renderTable();
+-      if ($('#eventModal').hasClass('show')) this.renderModal();
+-    });
+-
+-    I18n.apply();
+-    document.title = `${I18n.t('admin.title')} · ${SITE_CONFIG.businessName}`;
+-    $('.business-name').text(SITE_CONFIG.businessName);
+-
+-    this.api('GET', '/api/admin/session')
+-      .done(() => this.showApp())
+-      .fail((xhr: JQueryXHR) => {
+-        this.showLogin(xhr.status === 401 ? '' : I18n.error(xhr));
+-      });
+-  }
+-
+-  private api(method: string, url: string, body?: unknown): JQueryXHR {
+-    const settings: JQueryAjaxSettings = {
+-      url,
+-      method,
+-      dataType: 'json',
+-    };
+-    if (body !== undefined) {
+-      settings.contentType = 'application/json';
+-      settings.data = JSON.stringify(body);
+-    }
+-    return $.ajax(settings).fail((xhr: JQueryXHR) => {
+-      // Login and the start-up session check handle their own 401s.
+-      if (xhr.status === 401 && url !== '/api/admin/login' && url !== '/api/admin/session') {
+-        this.modal.hide();
+-        this.showLogin(I18n.error(xhr));
+-      }
+-    });
+-  }
+-
+-  // ---- Login / logout ----
+-
+-  private showLogin(message?: string): void {
+-    $('#app-view').addClass('d-none');
+-    $('#logout').addClass('d-none');
+-    $('#login-view').removeClass('d-none');
+-    $('#login-error').text(message || '').toggleClass('d-none', !message);
+-    $('#password').val('').trigger('focus');
+-  }
+-
+-  private showApp(): void {
+-    $('#login-view').addClass('d-none');
+-    $('#app-view, #logout').removeClass('d-none');
+-    this.loadEvents();
+-  }
+-
+-  // ---- Event list ----
+-
+-  private statusOf(ev: AdminEvent): 'past' | 'inProgress' | 'upcoming' {
+-    const now = Date.now();
+-    if (ev.endsAt <= now) return 'past';
+-    if (ev.startsAt <= now) return 'inProgress';
+-    return 'upcoming';
+-  }
+-
+-  private renderTable(): void {
+-    const $body = $('#events-body').empty();
+-    const visible = this.events.filter(ev => {
+-      const status = this.statusOf(ev);
+-      if (this.filter === 'upcoming') return status !== 'past';
+-      if (this.filter === 'past') return status === 'past';
+-      return true;
+-    });
+-
+-    $('#events-empty').toggleClass('d-none', visible.length > 0);
+-
+-    visible.forEach(ev => {
+-      const status = this.statusOf(ev);
+-      const badge = this.STATUS_BADGE[status];
+-      $body.append(
+-        $('<tr>').attr('data-id', ev.id).toggleClass('is-past', status === 'past').append(
+-          $('<td class="fw-semibold">').text(ev.name),
+-          $('<td>').append(
+-            $('<div>').text(Time.longDate(ev.startsAt, true)),
+-            $('<div class="small text-body-secondary">').text(Time.timeRange(ev.startsAt, ev.endsAt)),
+-          ),
+-          $('<td class="text-center">').text(`${ev.booked} / ${ev.capacity}`),
+-          $('<td>').append($('<span class="badge">').addClass(badge[0]).text(I18n.t(badge[1]))),
+-        ),
+-      );
+-    });
+-  }
+-
+-  private loadEvents(): JQueryXHR {
+-    return this.api('GET', '/api/admin/events').done((data: { events: AdminEvent[] }) => {
+-      this.events = data.events;
+-      this.renderTable();
+-    });
+-  }
+-
+-  // ---- Create / edit popup ----
+-
+-  private clearMessages(): void {
+-    $('#event-error, #event-saved').addClass('d-none');
+-  }
+-
+-  private renderModal(): void {
+-    const editing = this.current !== null;
+-    $('#eventModalLabel').text(I18n.t(editing ? 'admin.editClass' : 'admin.createClass'));
+-    $('#delete-event, #signups').toggleClass('d-none', !editing);
+-    if (editing) this.renderSignups();
+-  }
+-
+-  private fillForm(): void {
+-    const ev = this.current && this.current.event;
+-    $('#e-name').val(ev ? ev.name : '');
+-    $('#e-description').val(ev ? ev.description : '');
+-    const sofiaStr = ev ? Time.toSofiaInput(ev.startsAt) : '';
+-    $('#e-start-date').val(sofiaStr ? sofiaStr.split('T')[0] : '');
+-    $('#e-start-time').val(sofiaStr ? sofiaStr.split('T')[1] : '');
+-    $('#e-duration').val(ev ? ev.durationMinutes : 60);
+-    $('#e-capacity').val(ev ? ev.capacity : 12);
+-  }
+-
+-  private openModal(details: EventDetails | null): void {
+-    this.current = details;
+-    $('#event-form').removeClass('was-validated');
+-    this.clearMessages();
+-    this.fillForm();
+-    this.renderModal();
+-    this.modal.show();
+-  }
+-
+-  private renderSignups(): void {
+-    const ev = this.current!.event;
+-    const list = this.current!.reservations;
+-    $('#signups-title').text(I18n.t('admin.signups', { n: list.length, cap: ev.capacity }));
+-    $('#signups-empty').toggleClass('d-none', list.length > 0);
+-    $('#signups-table').toggleClass('d-none', list.length === 0);
+-
+-    const $body = $('#signups-body').empty();
+-    list.forEach(r => {
+-      $body.append(
+-        $('<tr>').append(
+-          $('<td>').text(r.name),
+-          $('<td>').append($('<a>').attr('href', `mailto:${r.email}`).text(r.email)),
+-          $('<td class="text-nowrap">').append($('<a>').attr('href', `tel:${r.phone.replace(/[^+\d]/g, '')}`).text(r.phone)),
+-          $('<td class="small text-body-secondary text-nowrap">').text(
+-            Time.format(r.createdAt, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }),
+-          ),
+-          $('<td class="text-end">').append(
+-            $('<button type="button" class="btn btn-sm btn-outline-danger remove-signup">')
+-              .attr({ 'data-id': r.id, 'data-name': r.name, title: I18n.t('admin.remove'), 'aria-label': I18n.t('admin.remove') })
+-              .append(icon('x-lg')),
+-          ),
+-        ),
+-      );
+-    });
+-  }
+-}
+-
+-$(() => { new AdminPage(); });
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/common.ts post-impl/src/js/common.ts
+--- pre-impl/src/js/common.ts	2026-10-07 09:34:15.000000000 +0300
++++ post-impl/src/js/common.ts	1970-01-01 02:00:00.000000000 +0200
+@@ -1,157 +0,0 @@
+-// Shared helpers for the admin area (the public site is Vue): translations and Sofia-time handling.
+-
+-import { createTime } from './time';
+-
+-window.I18n = (function (): I18nModule {
+-  const STORAGE_KEY = 'lang';
+-  const listeners: ((lang: string) => void)[] = [];
+-  let lang = 'bg';
+-
+-  try {
+-    const saved = localStorage.getItem(STORAGE_KEY);
+-    lang = saved === 'en' || saved === 'bg' ? saved : (window.SITE_CONFIG && SITE_CONFIG.defaultLanguage) || 'bg';
+-  } catch (e) {
+-    lang = (window.SITE_CONFIG && SITE_CONFIG.defaultLanguage) || 'bg';
+-  }
+-
+-  function has(key: string): boolean {
+-    return key in TRANSLATIONS[lang];
+-  }
+-
+-  function t(key: TranslationKey, vars?: Record<string, string | number>): string {
+-    let text = has(key) ? TRANSLATIONS[lang][key] : key;
+-    if (vars) {
+-      $.each(vars, (k: string, v: string | number) => {
+-        text = text.split(`{${k}}`).join(String(v));
+-      });
+-    }
+-    return text;
+-  }
+-
+-  // Translates an API error response (or error code) into a user-facing message.
+-  function error(xhrOrCode: unknown): string {
+-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-    const input = xhrOrCode as any;
+-    const body = input && input.responseJSON;
+-    const code: unknown = body ? body.error : xhrOrCode;
+-    return has(`err.${code}`) ? t(`err.${code}` as TranslationKey, body as Record<string, string | number>) : t('err.generic');
+-  }
+-
+-  function apply(): void {
+-    document.documentElement.lang = lang;
+-    $('[data-i18n]').each(function (this: HTMLElement) {
+-      $(this).text(t($(this).data('i18n') as TranslationKey));
+-    });
+-    $('[data-i18n-placeholder]').each(function (this: HTMLElement) {
+-      $(this).attr('placeholder', t($(this).data('i18n-placeholder') as TranslationKey));
+-    });
+-    $('.lang-switch .dropdown-toggle').text(lang.toUpperCase());
+-    $('.lang-switch [data-lang]').each(function (this: HTMLElement) {
+-      $(this).toggleClass('active', $(this).data('lang') === lang);
+-    });
+-    $('.lang-switch').attr('aria-label', t('langSwitcherLabel'));
+-  }
+-
+-  function set(newLang: string): void {
+-    if (newLang === lang) return;
+-    lang = newLang;
+-    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* storage unavailable */ }
+-    apply();
+-    listeners.forEach(fn => fn(lang));
+-  }
+-
+-  $(document).on('click', '.lang-switch [data-lang]', function (this: HTMLElement, e: JQuery.ClickEvent) {
+-    e.preventDefault();
+-    set($(this).data('lang') as string);
+-  });
+-
+-  // Sync the dropdown toggle text immediately from the stored lang (scripts run after body so DOM exists).
+-  $('.lang-switch .dropdown-toggle').text(lang.toUpperCase());
+-
+-  return {
+-    t,
+-    has,
+-    error,
+-    apply,
+-    onChange(fn: (lang: string) => void) { listeners.push(fn); },
+-    get lang() { return lang; },
+-  };
+-})();
+-
+-// Sofia-time logic lives in time.ts (shared with the Vue code); this keeps the admin's global API.
+-window.Time = createTime(() => I18n.lang);
+-
+-window.icon = (name: string): JQuery => $('<i class="bi" aria-hidden="true"></i>').addClass(`bi-${name}`);
+-
+-window.Theme = (function (): ThemeModule {
+-  const STORAGE_KEY = 'theme';
+-  type ThemeValue = 'dark' | 'light';
+-  let current: ThemeValue = 'dark';
+-
+-  try {
+-    const saved = localStorage.getItem(STORAGE_KEY);
+-    current = saved === 'light' ? 'light' : 'dark';
+-  } catch (e) { /* storage unavailable */ }
+-
+-  function apply(): void {
+-    if (current === 'light') {
+-      document.documentElement.setAttribute('data-theme', 'light');
+-    } else {
+-      document.documentElement.removeAttribute('data-theme');
+-    }
+-    const iconClass = current === 'light' ? 'bi-sun-fill' : 'bi-moon-stars-fill';
+-    $('.theme-switch .dropdown-toggle i').attr('class', `bi ${iconClass}`).attr('aria-hidden', 'true');
+-    $('.theme-switch [data-theme-btn]').each(function (this: HTMLElement) {
+-      $(this).toggleClass('active', $(this).data('theme-btn') === current);
+-    });
+-    $('.theme-switch').attr('aria-label', I18n.t('themeSwitcherLabel'));
+-  }
+-
+-  function set(value: ThemeValue): void {
+-    if (value === current) return;
+-    current = value;
+-    try { localStorage.setItem(STORAGE_KEY, current); } catch (e) { /* storage unavailable */ }
+-    apply();
+-  }
+-
+-  $(document).on('click', '.theme-switch [data-theme-btn]', function (this: HTMLElement, e: JQuery.ClickEvent) {
+-    e.preventDefault();
+-    set($(this).data('theme-btn') as ThemeValue);
+-  });
+-
+-  apply();
+-
+-  return {
+-    apply,
+-    get current() { return current; },
+-  };
+-})();
+-
+-(function () {
+-  const DISMISSED_KEY = 'onboarding_dismissed';
+-  const COUNT_KEY = 'onboarding_count';
+-  const MAX_SHOWS = 3;
+-
+-  try {
+-    if (localStorage.getItem(DISMISSED_KEY) === '1') return;
+-    const count = parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+-    if (count >= MAX_SHOWS) return;
+-    localStorage.setItem(COUNT_KEY, String(count + 1));
+-  } catch (e) {
+-    return;
+-  }
+-
+-  $('#onboarding-tip').removeClass('d-none');
+-
+-  $(document).on('click', '#onboarding-dismiss', function () {
+-    try { localStorage.setItem(DISMISSED_KEY, '1'); } catch (e) { /* storage unavailable */ }
+-    $('#onboarding-tip').addClass('d-none');
+-  });
+-
+-  $(document).on('click', function (e: JQuery.ClickEvent) {
+-    if ($('#onboarding-tip').hasClass('d-none')) return;
+-    if (!($(e.target as HTMLElement).closest('#onboarding-tip').length)) {
+-      $('#onboarding-tip').addClass('d-none');
+-    }
+-  });
+-})();
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/config.ts post-impl/src/js/config.ts
+--- pre-impl/src/js/config.ts	2026-10-07 09:33:57.000000000 +0300
++++ post-impl/src/js/config.ts	2026-10-07 10:13:00.000000000 +0300
+@@ -12,6 +12,3 @@
+   // Language shown on a visitor's first visit: 'bg' or 'en'.
+   defaultLanguage: 'bg',
+ };
+-
+-// The admin page (still jQuery) reads it from the window.
+-window.SITE_CONFIG = SITE_CONFIG;
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/globals.d.ts post-impl/src/js/globals.d.ts
+--- pre-impl/src/js/globals.d.ts	2026-10-07 09:33:45.000000000 +0300
++++ post-impl/src/js/globals.d.ts	1970-01-01 02:00:00.000000000 +0200
+@@ -1,38 +0,0 @@
+-/// <reference types="jquery" />
+-
+-// Shared types live in types.ts; aliased here for the legacy (non-module) admin scripts.
+-type TranslationKey = import('./types').TranslationKey;
+-type SiteConfig = import('./types').SiteConfig;
+-type TimeModule = import('./types').TimeModule;
+-
+-interface I18nModule {
+-  t(key: TranslationKey, vars?: Record<string, string | number>): string;
+-  has(key: string): boolean;
+-  error(xhrOrCode: unknown): string;
+-  apply(): void;
+-  onChange(fn: (lang: string) => void): void;
+-  readonly lang: string;
+-}
+-
+-interface ThemeModule {
+-  apply(): void;
+-  readonly current: 'dark' | 'light';
+-}
+-
+-// Global Window augmentation.
+-interface Window {
+-  SITE_CONFIG: SiteConfig;
+-  TRANSLATIONS: Record<string, Record<TranslationKey, string>>;
+-  I18n: I18nModule;
+-  Time: TimeModule;
+-  Theme: ThemeModule;
+-  icon: (name: string) => JQuery;
+-}
+-
+-// Shorthand ambient declarations so consuming .ts files can omit `window.`.
+-declare const SITE_CONFIG: SiteConfig;
+-declare const TRANSLATIONS: Record<string, Record<TranslationKey, string>>;
+-declare const I18n: I18nModule;
+-declare const Time: TimeModule;
+-declare const Theme: ThemeModule;
+-declare function icon(name: string): JQuery;
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/i18n.ts post-impl/src/js/i18n.ts
+--- pre-impl/src/js/i18n.ts	2026-10-07 09:33:57.000000000 +0300
++++ post-impl/src/js/i18n.ts	2026-10-07 10:13:00.000000000 +0300
+@@ -179,6 +179,3 @@
+     'admin.remove': 'Премахни',
+   },
+ };
+-
+-// The admin page (still jQuery) reads it from the window.
+-window.TRANSLATIONS = TRANSLATIONS;
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/onboarding.ts post-impl/src/js/onboarding.ts
+--- pre-impl/src/js/onboarding.ts	1970-01-01 02:00:00.000000000 +0200
++++ post-impl/src/js/onboarding.ts	2026-10-07 10:11:32.000000000 +0300
+@@ -0,0 +1,21 @@
++// Onboarding tip visit counter, shared by the public tip and the admin page (which counts visits too).
++
++export const DISMISSED_KEY = 'onboarding_dismissed';
++const COUNT_KEY = 'onboarding_count';
++const MAX_SHOWS = 3;
++
++/**
++ * Counts this page load as a showing. Returns true while the tip should still be shown: the first
++ * three visits until "Got it" is clicked. Any storage failure means no tip.
++ */
++export function countOnboardingVisit(): boolean {
++  try {
++    if (localStorage.getItem(DISMISSED_KEY) === '1') return false;
++    const count = parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
++    if (count >= MAX_SHOWS) return false;
++    localStorage.setItem(COUNT_KEY, String(count + 1));
++    return true;
++  } catch {
++    return false;
++  }
++}
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/time.ts post-impl/src/js/time.ts
+--- pre-impl/src/js/time.ts	2026-10-07 09:34:08.000000000 +0300
++++ post-impl/src/js/time.ts	2026-10-07 10:13:12.000000000 +0300
+@@ -1,4 +1,4 @@
+-// Sofia-time handling, shared by the Vue code and the admin's `window.Time` (common.ts).
++// Sofia-time handling, shared by the Vue apps (via useI18n).
+ // All times are shown and entered in Europe/Sofia, whatever the visitor's timezone.
+ 
+ import type { TimeModule } from './types';
+diff -ruN '--exclude=package-lock.json' pre-impl/src/js/types.ts post-impl/src/js/types.ts
+--- pre-impl/src/js/types.ts	2026-10-07 09:32:21.000000000 +0300
++++ post-impl/src/js/types.ts	2026-10-07 10:11:41.000000000 +0300
+@@ -122,3 +122,29 @@
+   timeRange(start: number, end: number): string;
+   longDate(ms: number, withYear?: boolean): string;
+ }
++
++/** A class as returned by the admin API. Timestamps are epoch milliseconds. */
++export interface AdminEvent {
++  id: number;
++  name: string;
++  description: string;
++  startsAt: number;
++  endsAt: number;
++  durationMinutes: number;
++  booked: number;
++  capacity: number;
++}
++
++export interface Reservation {
++  id: number;
++  name: string;
++  email: string;
++  phone: string;
++  createdAt: number;
++}
++
++/** GET/PUT /api/admin/events/:id and POST /api/admin/events. */
++export interface EventDetails {
++  event: AdminEvent;
++  reservations: Reservation[];
++}
+diff -ruN '--exclude=package-lock.json' pre-impl/src/vue/admin/AdminApp.vue post-impl/src/vue/admin/AdminApp.vue
+--- pre-impl/src/vue/admin/AdminApp.vue	1970-01-01 02:00:00.000000000 +0200
++++ post-impl/src/vue/admin/AdminApp.vue	2026-10-07 10:12:43.000000000 +0300
+@@ -0,0 +1,251 @@
++<script setup lang="ts">
++import { computed, nextTick, ref, useTemplateRef, watch, watchEffect } from 'vue';
++import { BButton, BButtonGroup } from 'bootstrap-vue-next/components/BButton';
++import { ApiError, apiFetch, errorText, type ApiOptions } from '@src/api';
++import { SITE_CONFIG } from '@src/config';
++import { useI18n } from '@src/useI18n';
++import '@src/useTheme'; // applies the stored theme
++import { countOnboardingVisit } from '@src/onboarding';
++import type { AdminEvent, EventDetails, Lang, TranslationKey } from '@src/types';
++import EventModal from './EventModal.vue';
++
++// The admin page has no tip, but its visits still count towards the three showings, as before.
++countOnboardingVisit();
++
++type Status = 'past' | 'inProgress' | 'upcoming';
++type Filter = 'all' | 'upcoming' | 'past';
++
++const STATUS_BADGE: Record<Status, [string, TranslationKey]> = {
++  upcoming: ['text-bg-success', 'admin.statusUpcoming'],
++  inProgress: ['text-bg-info', 'admin.statusInProgress'],
++  past: ['text-bg-secondary', 'admin.statusPast'],
++};
++const FILTERS: [Filter, TranslationKey][] = [
++  ['all', 'admin.filterAll'],
++  ['upcoming', 'admin.filterUpcoming'],
++  ['past', 'admin.filterPast'],
++];
++const LANGS: Lang[] = ['bg', 'en'];
++
++const { t, lang, setLang, time } = useI18n();
++const cfg = SITE_CONFIG;
++
++watchEffect(() => {
++  document.title = `${t('admin.title')} · ${cfg.businessName}`;
++});
++
++const modal = useTemplateRef<InstanceType<typeof EventModal>>('modal');
++const passwordInput = useTemplateRef<HTMLInputElement>('passwordInput');
++
++// ---- API ----
++
++/** apiFetch plus the global 401: any call except login and the start-up check sends you to the login form. */
++async function api<T>(url: string, options?: ApiOptions): Promise<T> {
++  try {
++    return await apiFetch<T>(url, options);
++  } catch (err) {
++    if (err instanceof ApiError && err.status === 401 && url !== '/api/admin/login' && url !== '/api/admin/session') {
++      modal.value?.hide();
++      showLogin(errorText(err));
++    }
++    throw err;
++  }
++}
++
++// ---- Login / logout ----
++
++const view = ref<'none' | 'login' | 'app'>('none');
++const password = ref('');
++const loginError = ref(''); // stored text, so a language change leaves it as shown
++const loggingIn = ref(false);
++
++function showLogin(message?: string): void {
++  view.value = 'login';
++  loginError.value = message || '';
++  password.value = '';
++  void nextTick(() => passwordInput.value?.focus());
++}
++
++function showApp(): void {
++  view.value = 'app';
++  void loadEvents();
++}
++
++async function login(): Promise<void> {
++  loggingIn.value = true;
++  try {
++    await api<unknown>('/api/admin/login', { method: 'POST', json: { password: password.value } });
++    showApp();
++  } catch (err) {
++    showLogin(errorText(err));
++  } finally {
++    loggingIn.value = false;
++  }
++}
++
++async function logout(): Promise<void> {
++  try {
++    await api<unknown>('/api/admin/logout', { method: 'POST' });
++  } catch { /* the login form is shown either way */ }
++  showLogin();
++}
++
++// ---- Event list ----
++
++const events = ref<AdminEvent[] | null>(null); // null = not loaded yet
++const filter = ref<Filter>('all');
++// Status is classified against this, refreshed only on list load, filter click and language change.
++const now = ref(Date.now());
++
++watch(lang, () => { now.value = Date.now(); });
++
++function statusOf(ev: AdminEvent): Status {
++  if (ev.endsAt <= now.value) return 'past';
++  if (ev.startsAt <= now.value) return 'inProgress';
++  return 'upcoming';
++}
++
++const rows = computed(() => (events.value ?? [])
++  .map(ev => ({ ev, status: statusOf(ev) }))
++  .filter(({ status }) => {
++    if (filter.value === 'upcoming') return status !== 'past';
++    if (filter.value === 'past') return status === 'past';
++    return true;
++  }));
++
++function setFilter(value: Filter): void {
++  filter.value = value;
++  now.value = Date.now();
++}
++
++async function loadEvents(): Promise<void> {
++  try {
++    const data = await api<{ events: AdminEvent[] }>('/api/admin/events');
++    events.value = data.events;
++    now.value = Date.now();
++  } catch { /* the global 401 handles an expired session; other failures leave the list as it was */ }
++}
++
++async function openEvent(id: number): Promise<void> {
++  try {
++    const data = await api<EventDetails>(`/api/admin/events/${id}`);
++    modal.value?.open(data);
++  } catch { /* non-401 errors are ignored, as before */ }
++}
++
++// ---- Start-up ----
++
++(async () => {
++  try {
++    await api<unknown>('/api/admin/session');
++    showApp();
++  } catch (err) {
++    showLogin(err instanceof ApiError && err.status === 401 ? '' : errorText(err));
++  }
++})();
++</script>
++
++<template>
++  <nav class="navbar topbar">
++    <div class="container gap-2">
++      <span class="navbar-brand text-white mb-0 h1 fs-5">
++        <span class="business-name">{{ cfg.businessName }}</span> · <span>{{ t('admin.title') }}</span>
++      </span>
++      <div class="d-flex align-items-center gap-2">
++        <a href="/" class="btn btn-sm btn-outline-light" target="_blank" rel="noopener">
++          <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
++          <span class="d-none d-sm-inline">{{ t('admin.viewSite') }}</span>
++        </a>
++        <BButtonGroup size="sm" class="lang-switch" :aria-label="t('langSwitcherLabel')">
++          <BButton
++            v-for="code in LANGS"
++            :key="code"
++            variant="outline-light"
++            :data-lang="code"
++            :active="lang === code"
++            @click.prevent="setLang(code)"
++          >{{ code.toUpperCase() }}</BButton>
++        </BButtonGroup>
++        <button type="button" class="btn btn-sm btn-light" :class="{ 'd-none': view !== 'app' }" id="logout" @click="logout">
++          <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
++          <span class="d-none d-sm-inline">{{ t('admin.logout') }}</span>
++        </button>
++      </div>
++    </div>
++  </nav>
++
++  <!-- Login -->
++  <section id="login-view" class="container" :class="{ 'd-none': view !== 'login' }">
++    <div class="card admin-login shadow-sm">
++      <div class="card-body p-4">
++        <h1 class="h4 mb-3">{{ t('admin.loginTitle') }}</h1>
++        <form id="login-form" @submit.prevent="login">
++          <div class="mb-3">
++            <label for="password" class="form-label">{{ t('admin.password') }}</label>
++            <input ref="passwordInput" v-model="password" type="password" class="form-control" id="password" autocomplete="current-password" required>
++          </div>
++          <div class="alert alert-danger" :class="{ 'd-none': !loginError }" id="login-error" role="alert">{{ loginError }}</div>
++          <button type="submit" class="btn btn-primary w-100" id="login-submit" :disabled="loggingIn">{{ t('admin.login') }}</button>
++        </form>
++      </div>
++    </div>
++  </section>
++
++  <!-- Event list -->
++  <main id="app-view" class="container py-4" :class="{ 'd-none': view !== 'app' }">
++    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
++      <h1 class="h3 mb-0">{{ t('admin.classes') }}</h1>
++      <div class="d-flex flex-wrap gap-2">
++        <div class="btn-group btn-group-sm" role="group" id="filter">
++          <button
++            v-for="[value, key] in FILTERS"
++            :key="value"
++            type="button"
++            class="btn btn-outline-secondary"
++            :class="{ active: filter === value }"
++            :data-filter="value"
++            @click="setFilter(value)"
++          >{{ t(key) }}</button>
++        </div>
++        <button type="button" class="btn btn-primary btn-sm" id="new-event" @click="modal?.open(null)">
++          <i class="bi bi-plus-lg" aria-hidden="true"></i> <span>{{ t('admin.newClass') }}</span>
++        </button>
++      </div>
++    </div>
++
++    <div class="card shadow-sm">
++      <div class="table-responsive">
++        <table class="table table-hover mb-0 events-table">
++          <thead>
++            <tr>
++              <th>{{ t('admin.colName') }}</th>
++              <th>{{ t('admin.colDate') }}</th>
++              <th class="text-center">{{ t('admin.colBooked') }}</th>
++              <th>{{ t('admin.colStatus') }}</th>
++            </tr>
++          </thead>
++          <tbody id="events-body">
++            <tr
++              v-for="{ ev, status } in rows"
++              :key="ev.id"
++              :data-id="ev.id"
++              :class="{ 'is-past': status === 'past' }"
++              @click="openEvent(ev.id)"
++            >
++              <td class="fw-semibold">{{ ev.name }}</td>
++              <td>
++                <div>{{ time.longDate(ev.startsAt, true) }}</div>
++                <div class="small text-body-secondary">{{ time.timeRange(ev.startsAt, ev.endsAt) }}</div>
++              </td>
++              <td class="text-center">{{ ev.booked }} / {{ ev.capacity }}</td>
++              <td><span class="badge" :class="STATUS_BADGE[status][0]">{{ t(STATUS_BADGE[status][1]) }}</span></td>
++            </tr>
++          </tbody>
++        </table>
++      </div>
++      <div id="events-empty" class="text-center text-body-secondary py-5" :class="{ 'd-none': events === null || rows.length > 0 }">{{ t('admin.noClasses') }}</div>
++    </div>
++  </main>
++
++  <EventModal ref="modal" :api="api" @changed="loadEvents" />
++</template>
+diff -ruN '--exclude=package-lock.json' pre-impl/src/vue/admin/EventModal.vue post-impl/src/vue/admin/EventModal.vue
+--- pre-impl/src/vue/admin/EventModal.vue	1970-01-01 02:00:00.000000000 +0200
++++ post-impl/src/vue/admin/EventModal.vue	2026-10-07 10:12:16.000000000 +0300
+@@ -0,0 +1,254 @@
++<script setup lang="ts">
++import { computed, reactive, ref, useTemplateRef } from 'vue';
++import { BModal } from 'bootstrap-vue-next/components/BModal';
++import { ApiError, errorText, type ApiOptions } from '@src/api';
++import { useI18n } from '@src/useI18n';
++import type { EventDetails, Reservation } from '@src/types';
++
++export type AdminApi = <T>(url: string, options?: ApiOptions) => Promise<T>;
++
++const props = defineProps<{
++  /** Fetch wrapper that also handles an expired session. */
++  api: AdminApi;
++}>();
++const emit = defineEmits<{
++  /** A class was saved, deleted or lost a sign-up; the parent reloads the list. */
++  changed: [];
++}>();
++
++const { t, time } = useI18n();
++
++const show = ref(false);
++const form = useTemplateRef<HTMLFormElement>('form');
++
++/** `{ event, reservations }` while editing; null when creating. */
++const current = ref<EventDetails | null>(null);
++const editing = computed(() => current.value !== null);
++
++// Form fields are filled only on open and after a save, so a sign-up removal keeps typed values.
++const name = ref('');
++const description = ref('');
++const startDate = ref('');
++const startTime = ref('');
++const duration = ref('60');
++const capacity = ref('12');
++
++const validated = ref(false);
++const saved = ref(false);
++const errorMessage = ref(''); // stored text, so a language change leaves it as shown
++const saving = ref(false);
++const removing = reactive(new Set<number>()); // reservation ids with a pending removal
++
++function is401(err: unknown): boolean {
++  return err instanceof ApiError && err.status === 401;
++}
++
++function clearMessages(): void {
++  errorMessage.value = '';
++  saved.value = false;
++}
++
++function fillForm(): void {
++  const ev = current.value?.event;
++  name.value = ev ? ev.name : '';
++  description.value = ev ? ev.description : '';
++  const sofiaStr = ev ? time.toSofiaInput(ev.startsAt) : '';
++  startDate.value = sofiaStr ? sofiaStr.split('T')[0] : '';
++  startTime.value = sofiaStr ? sofiaStr.split('T')[1] : '';
++  duration.value = String(ev ? ev.durationMinutes : 60);
++  capacity.value = String(ev ? ev.capacity : 12);
++}
++
++/** Opens the popup for editing `details`, or for a new class when null. */
++function open(details: EventDetails | null): void {
++  current.value = details;
++  validated.value = false;
++  clearMessages();
++  fillForm();
++  // Bootstrap did not restore focus on close; with nothing focused, the focus trap has nothing to return to.
++  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
++  show.value = true;
++}
++
++function hide(): void {
++  show.value = false;
++}
++
++async function submit(): Promise<void> {
++  clearMessages();
++
++  const startsAt = time.fromSofiaInput(`${startDate.value}T${startTime.value}`);
++  if (!form.value || !form.value.checkValidity()) {
++    validated.value = true;
++    return;
++  }
++
++  const body = {
++    name: name.value,
++    description: description.value,
++    startsAt: startsAt as number,
++    durationMinutes: Number(duration.value),
++    capacity: Number(capacity.value),
++  };
++  const request = current.value
++    ? props.api<EventDetails>(`/api/admin/events/${current.value.event.id}`, { method: 'PUT', json: body })
++    : props.api<EventDetails>('/api/admin/events', { method: 'POST', json: body });
++
++  saving.value = true;
++  try {
++    const data = await request;
++    current.value = data;
++    validated.value = false;
++    fillForm();
++    saved.value = true;
++    emit('changed');
++  } catch (err) {
++    if (!is401(err)) errorMessage.value = errorText(err);
++  } finally {
++    saving.value = false;
++  }
++}
++
++async function deleteEvent(): Promise<void> {
++  if (!current.value || !window.confirm(t('admin.confirmDelete'))) return;
++  try {
++    await props.api<unknown>(`/api/admin/events/${current.value.event.id}`, { method: 'DELETE' });
++    hide();
++    emit('changed');
++  } catch (err) {
++    if (!is401(err)) errorMessage.value = errorText(err);
++  }
++}
++
++async function removeSignup(r: Reservation): Promise<void> {
++  if (!window.confirm(t('admin.confirmRemove', { name: r.name }))) return;
++
++  removing.add(r.id);
++  try {
++    await props.api<unknown>(`/api/admin/reservations/${r.id}`, { method: 'DELETE' });
++    const data = await props.api<EventDetails>(`/api/admin/events/${current.value!.event.id}`);
++    current.value = data;
++    removing.delete(r.id);
++    emit('changed');
++  } catch (err) {
++    removing.delete(r.id);
++    if (!is401(err)) errorMessage.value = errorText(err);
++  }
++}
++
++function telHref(phone: string): string {
++  return `tel:${phone.replace(/[^+\d]/g, '')}`;
++}
++
++function bookedAt(ms: number): string {
++  return time.format(ms, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
++}
++
++// New classes focus the name field; edits keep the default (the dialog itself), as Bootstrap did.
++const focusTarget = computed(() => (editing.value ? undefined : 'e-name'));
++
++defineExpose({ open, hide });
++</script>
++
++<template>
++  <BModal
++    id="eventModal"
++    v-model="show"
++    size="lg"
++    scrollable
++    no-footer
++    aria-labelledby="eventModalLabel"
++    :focus="focusTarget"
++  >
++    <template #header="{ close }">
++      <h2 class="modal-title h5" id="eventModalLabel">{{ t(editing ? 'admin.editClass' : 'admin.createClass') }}</h2>
++      <button type="button" class="btn-close" aria-label="Close" @click="close"></button>
++    </template>
++
++    <form ref="form" id="event-form" :class="{ 'was-validated': validated }" novalidate @submit.prevent="submit">
++      <div class="row g-3">
++        <div class="col-12">
++          <label for="e-name" class="form-label">{{ t('admin.name') }}</label>
++          <input v-model="name" type="text" class="form-control" id="e-name" maxlength="120" required>
++          <div class="invalid-feedback">{{ t('err.invalid_name') }}</div>
++        </div>
++        <div class="col-12">
++          <label for="e-description" class="form-label">{{ t('admin.description') }}</label>
++          <textarea v-model="description" class="form-control" id="e-description" rows="3" maxlength="2000"></textarea>
++        </div>
++        <div class="col-6 col-md-3 d-flex flex-column">
++          <label for="e-start-date" class="form-label flex-grow-1 d-flex align-items-end">{{ t('admin.startDate') }}</label>
++          <input v-model="startDate" type="date" class="form-control" id="e-start-date" required>
++          <div class="invalid-feedback">{{ t('err.invalid_start') }}</div>
++        </div>
++        <div class="col-6 col-md-3 d-flex flex-column">
++          <label for="e-start-time" class="form-label flex-grow-1 d-flex align-items-end">{{ t('admin.startTime') }}</label>
++          <input v-model="startTime" type="time" class="form-control" id="e-start-time" required>
++          <div class="invalid-feedback">{{ t('err.invalid_start') }}</div>
++        </div>
++        <div class="col-6 col-md-3 d-flex flex-column">
++          <label for="e-duration" class="form-label flex-grow-1 d-flex align-items-end">{{ t('admin.duration') }}</label>
++          <input v-model="duration" type="number" class="form-control" id="e-duration" min="1" max="1440" step="1" required>
++          <div class="invalid-feedback">{{ t('err.invalid_duration') }}</div>
++        </div>
++        <div class="col-6 col-md-3 d-flex flex-column">
++          <label for="e-capacity" class="form-label flex-grow-1 d-flex align-items-end">{{ t('admin.capacity') }}</label>
++          <input v-model="capacity" type="number" class="form-control" id="e-capacity" min="1" max="1000" step="1" required>
++          <div class="invalid-feedback">{{ t('err.invalid_capacity') }}</div>
++        </div>
++      </div>
++
++      <div class="alert alert-danger mt-3 mb-0" :class="{ 'd-none': !errorMessage }" id="event-error" role="alert">{{ errorMessage }}</div>
++      <div class="alert alert-success mt-3 mb-0" :class="{ 'd-none': !saved }" id="event-saved" role="status">{{ t('admin.saved') }}</div>
++
++      <div class="d-flex justify-content-between gap-2 mt-3">
++        <button type="button" class="btn btn-outline-danger" :class="{ 'd-none': !editing }" id="delete-event" @click="deleteEvent">
++          <i class="bi bi-trash" aria-hidden="true"></i> <span>{{ t('admin.deleteClass') }}</span>
++        </button>
++        <button type="submit" class="btn btn-primary ms-auto" id="save-event" :disabled="saving">
++          <i class="bi bi-check-lg" aria-hidden="true"></i> <span>{{ t('admin.save') }}</span>
++        </button>
++      </div>
++    </form>
++
++    <section id="signups" class="mt-4 pt-3 border-top" :class="{ 'd-none': !editing }">
++      <template v-if="current">
++        <h3 class="h6 mb-3" id="signups-title">{{ t('admin.signups', { n: current.reservations.length, cap: current.event.capacity }) }}</h3>
++        <p class="text-body-secondary mb-0" :class="{ 'd-none': current.reservations.length > 0 }" id="signups-empty">{{ t('admin.noSignups') }}</p>
++        <div class="table-responsive">
++          <table class="table table-sm align-middle mb-0" :class="{ 'd-none': current.reservations.length === 0 }" id="signups-table">
++            <thead>
++              <tr>
++                <th>{{ t('yourName') }}</th>
++                <th>{{ t('email') }}</th>
++                <th>{{ t('phone') }}</th>
++                <th>{{ t('admin.bookedAt') }}</th>
++                <th></th>
++              </tr>
++            </thead>
++            <tbody id="signups-body">
++              <tr v-for="r in current.reservations" :key="r.id">
++                <td>{{ r.name }}</td>
++                <td><a :href="`mailto:${r.email}`">{{ r.email }}</a></td>
++                <td class="text-nowrap"><a :href="telHref(r.phone)">{{ r.phone }}</a></td>
++                <td class="small text-body-secondary text-nowrap">{{ bookedAt(r.createdAt) }}</td>
++                <td class="text-end">
++                  <button
++                    type="button"
++                    class="btn btn-sm btn-outline-danger remove-signup"
++                    :data-id="r.id"
++                    :data-name="r.name"
++                    :title="t('admin.remove')"
++                    :aria-label="t('admin.remove')"
++                    :disabled="removing.has(r.id)"
++                    @click="removeSignup(r)"
++                  ><i class="bi bi-x-lg" aria-hidden="true"></i></button>
++                </td>
++              </tr>
++            </tbody>
++          </table>
++        </div>
++      </template>
++    </section>
++  </BModal>
++</template>
+diff -ruN '--exclude=package-lock.json' pre-impl/src/vue/shared/OnboardingTip.vue post-impl/src/vue/shared/OnboardingTip.vue
+--- pre-impl/src/vue/shared/OnboardingTip.vue	2026-10-07 09:35:02.000000000 +0300
++++ post-impl/src/vue/shared/OnboardingTip.vue	2026-10-07 10:11:32.000000000 +0300
+@@ -1,29 +1,13 @@
+ <script setup lang="ts">
+ import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
+ import { useI18n } from '@src/useI18n';
+-
+-const DISMISSED_KEY = 'onboarding_dismissed';
+-const COUNT_KEY = 'onboarding_count';
+-const MAX_SHOWS = 3;
++import { countOnboardingVisit, DISMISSED_KEY } from '@src/onboarding';
+ 
+ const { t } = useI18n();
+ const tip = useTemplateRef<HTMLElement>('tip');
+ 
+-// Decided once per page load: shown on the first three visits until "Got it" is clicked.
+-// Any storage failure means no tip.
+-function shouldShow(): boolean {
+-  try {
+-    if (localStorage.getItem(DISMISSED_KEY) === '1') return false;
+-    const count = parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+-    if (count >= MAX_SHOWS) return false;
+-    localStorage.setItem(COUNT_KEY, String(count + 1));
+-    return true;
+-  } catch {
+-    return false;
+-  }
+-}
+-
+-const eligible = shouldShow();
++// Decided once per page load.
++const eligible = countOnboardingVisit();
+ const visible = ref(eligible);
+ 
+ function dismiss(): void {
+diff -ruN '--exclude=package-lock.json' pre-impl/vite.config.ts post-impl/vite.config.ts
+--- pre-impl/vite.config.ts	2026-10-07 09:37:14.000000000 +0300
++++ post-impl/vite.config.ts	2026-10-07 10:13:00.000000000 +0300
+@@ -1,6 +1,5 @@
+ import { defineConfig } from 'vite';
+ import vue from '@vitejs/plugin-vue';
+-import inject from '@rollup/plugin-inject';
+ import { resolve } from 'path';
+ import { copyFileSync, existsSync, mkdirSync } from 'fs';
+ import { fileURLToPath } from 'url';
+@@ -27,14 +26,6 @@
+   },
+   plugins: [
+     vue(),
+-    // jQuery/Bootstrap globals for the legacy admin scripts only; the Vue public page must not pull them in.
+-    inject({
+-      include: ['**/*.ts', '**/*.js'],
+-      exclude: ['**/*.vue', '**/*.vue?*'],
+-      $: 'jquery',
+-      jQuery: 'jquery',
+-      bootstrap: ['bootstrap', '*'],
+-    }),
+     {
+       name: 'inject-style-css',
+       enforce: 'post',

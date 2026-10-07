@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import inject from '@rollup/plugin-inject';
+import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import { copyFileSync, existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -25,12 +25,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    inject({
-      include: ['**/*.ts', '**/*.js'],
-      $: 'jquery',
-      jQuery: 'jquery',
-      bootstrap: ['bootstrap', '*'],
-    }),
+    vue(),
     {
       name: 'inject-style-css',
       enforce: 'post',

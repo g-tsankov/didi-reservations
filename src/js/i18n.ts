@@ -1,9 +1,10 @@
-window.TRANSLATIONS = {
+import type { Translations } from './types';
+
+export const TRANSLATIONS: Translations = {
   en: {
     pageTitle: 'Class schedule',
     heroSubtitle: 'Book your spot in one of our upcoming classes.',
     upcomingClasses: 'Upcoming classes',
-    loading: 'Loading…',
     noEvents: 'There are no upcoming classes at the moment. Check back soon!',
     loadError: 'Could not load the classes. Please try again later.',
     retry: 'Try again',
@@ -92,7 +93,6 @@ window.TRANSLATIONS = {
     pageTitle: 'График на класовете',
     heroSubtitle: 'Запазете своето място в някой от предстоящите ни класове.',
     upcomingClasses: 'Предстоящи класове',
-    loading: 'Зареждане…',
     noEvents: 'В момента няма предстоящи класове. Проверете отново скоро!',
     loadError: 'Класовете не можаха да бъдат заредени. Моля, опитайте отново по-късно.',
     retry: 'Опитай отново',

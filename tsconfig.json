@@ -13,5 +13,5 @@
       "@src/*": ["src/js/*"]
     }
   },
-  "include": ["src/js/**/*.ts", "public/js/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "public/js/**/*.ts"]
 }

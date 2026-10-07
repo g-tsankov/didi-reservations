@@ -2,122 +2,15 @@
 <html lang="bg">
 <head>
   <meta charset="utf-8">
+  <!-- Applies a stored light theme before any CSS loads, so it does not flash dark first (see src/js/useTheme.ts). -->
+  <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Classes</title>
 </head>
 <body>
 
-  <nav class="site-nav">
-    <div class="container">
-      <span class="nav-brand business-name"></span>
-      <span class="nav-address" id="nav-address"></span>
-      <div class="d-flex gap-2 align-items-center">
-      <div class="dropdown theme-switch">
-        <button class="btn btn-sm dropdown-toggle theme-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-moon-stars-fill" aria-hidden="true"></i>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#" data-theme-btn="dark"><i class="bi bi-moon-stars-fill me-2" aria-hidden="true"></i><span data-i18n="themeDark"></span></a></li>
-          <li><a class="dropdown-item" href="#" data-theme-btn="light"><i class="bi bi-sun-fill me-2" aria-hidden="true"></i><span data-i18n="themeLight"></span></a></li>
-        </ul>
-      </div>
-      <span class="onboarding-anchor">
-        <div id="onboarding-tip" class="onboarding-tip d-none" role="status" aria-live="polite">
-          <p class="onboarding-tip-text mb-2" data-i18n="onboardingTip"></p>
-          <button type="button" id="onboarding-dismiss" class="btn btn-sm btn-outline-secondary" data-i18n="onboardingDismiss"></button>
-        </div>
-      </span>
-      <div class="dropdown lang-switch">
-        <button class="btn btn-sm dropdown-toggle lang-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          BG
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#" data-lang="bg">BG</a></li>
-          <li><a class="dropdown-item" href="#" data-lang="en">EN</a></li>
-        </ul>
-      </div>
-      </div>
-    </div>
-  </nav>
-
-  <header class="hero text-center">
-    <div class="container">
-      <h1 class="display-5 fw-bold business-name mb-2"></h1>
-      <p class="lead mb-3 hero-tagline" data-i18n="heroTagline"></p>
-      <a href="#events" class="btn btn-primary" data-i18n="heroCta"></a>
-    </div>
-  </header>
-
-  <section id="studio-blurb">
-    <div class="container">
-      <p data-i18n="studioBlurb"></p>
-    </div>
-  </section>
-
-  <main class="container py-5">
-    <h2 class="h3 mb-4" data-i18n="upcomingClasses"></h2>
-    <div id="events-state" class="text-center py-5 text-body-secondary"></div>
-    <div id="events" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
-  </main>
-
-  <footer class="contact-section py-5">
-    <div class="container">
-      <h2 class="h4 mb-3" data-i18n="contact"></h2>
-      <ul class="list-unstyled mb-0 contact-list">
-        <li><i class="bi bi-person-fill" aria-hidden="true"></i><span id="contact-name"></span></li>
-        <li><i class="bi bi-envelope-fill" aria-hidden="true"></i><a id="contact-email"></a></li>
-        <li><i class="bi bi-telephone-fill" aria-hidden="true"></i><a id="contact-phone"></a></li>
-      </ul>
-    </div>
-  </footer>
-
-  <!-- Reservation popup -->
-  <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title h5" id="reserveModalLabel" data-i18n="reserveTitle"></h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="event-summary mb-3">
-            <h3 class="h5 mb-1" id="modal-event-name"></h3>
-            <div class="text-body-secondary small" id="modal-event-when"></div>
-            <p class="mt-2 mb-0 event-description" id="modal-event-description"></p>
-            <div class="mt-2" id="modal-event-spots"></div>
-          </div>
-
-          <div class="alert alert-success d-none" id="reserve-success" role="status">
-            <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i><span data-i18n="reservationSuccess"></span>
-            <button class="btn btn-primary w-100 mt-3" id="reserve-dismiss" data-i18n="close"></button>
-          </div>
-
-          <form id="reserve-form" novalidate>
-            <div class="mb-3">
-              <label for="r-name" class="form-label" data-i18n="yourName"></label>
-              <input type="text" class="form-control" id="r-name" name="name" maxlength="100" autocomplete="name" required>
-              <div class="invalid-feedback" data-i18n="err.invalid_name"></div>
-            </div>
-            <div class="mb-3">
-              <label for="r-email" class="form-label" data-i18n="email"></label>
-              <input type="email" class="form-control" id="r-email" name="email" maxlength="254" autocomplete="email" required>
-              <div class="invalid-feedback" data-i18n="err.invalid_email"></div>
-            </div>
-            <div class="mb-3">
-              <label for="r-phone" class="form-label" data-i18n="phone"></label>
-              <input type="tel" class="form-control" id="r-phone" name="phone" maxlength="20" autocomplete="tel" required>
-              <div class="invalid-feedback" data-i18n="err.invalid_phone"></div>
-            </div>
-            <div class="alert alert-danger d-none" id="reserve-error" role="alert"></div>
-            <button type="submit" class="btn btn-primary w-100" id="reserve-submit">
-              <span class="spinner-border spinner-border-sm me-1 d-none" aria-hidden="true"></span>
-              <span data-i18n="confirmBooking"></span>
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- The public page is a Vue app: src/vue/public/PublicApp.vue -->
+  <div id="app"></div>
 
   <script type="module" src="/js/entry-main.ts"></script>
 </body>

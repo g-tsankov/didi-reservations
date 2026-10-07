@@ -10,25 +10,26 @@
     "build": "vite build",
     "dev": "vite build && wrangler pages dev dist",
     "dev:debug": "vite build && wrangler pages dev dist --inspector-port 9229",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit",
     "db:init:local": "wrangler d1 execute didi-poledance --local --file=./db/schema.sql",
     "db:init:remote": "wrangler d1 execute didi-poledance --remote --file=./db/schema.sql",
     "deploy": "npm run build && wrangler pages deploy"
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.8",
-    "@rollup/plugin-inject": "^5.0.5",
     "@types/bootstrap": "^5.2.10",
-    "@types/jquery": "^3.5.32",
     "@types/node": "^26.6.4",
+    "@vitejs/plugin-vue": "^6.0.9",
     "typescript": "^5.7.2",
     "vite": "^8.3.3",
+    "vue-tsc": "^3.3.12",
     "wrangler": "^4.0.0"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
-    "jquery": "^4.0.0"
+    "bootstrap-vue-next": "^1.2.2",
+    "vue": "^3.5.43"
   }
 }

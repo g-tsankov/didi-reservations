@@ -22,6 +22,9 @@
   --rounded-lg: 1.5rem;
   --rounded-full: 9999px;
 
+  /* Native controls (date/time picker icons, scrollbars) follow the theme. */
+  color-scheme: dark;
+
   /* Bootstrap token overrides */
   --bs-body-bg: var(--surface-base);
   --bs-body-color: var(--ink-primary);
@@ -52,6 +55,7 @@
   --error-surface: rgba(192, 57, 43, 0.10);
   --bs-primary-rgb: 139, 34, 85;
   --ink-disabled-rgb: 158, 107, 126;
+  color-scheme: light;
 }
 
 html { scroll-behavior: smooth; }
@@ -63,6 +67,9 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
+
+/* The Vue mount point (public and admin pages) must not break the body's flex column (sticky footer). */
+#app { display: contents; }
 
 main { flex: 1 0 auto; }
 .min-w-0 { min-width: 0; }
@@ -157,27 +164,13 @@ main { flex: 1 0 auto; }
   text-overflow: ellipsis;
 }
 
-/* btn-group variant kept for admin/index.html which still uses the old structure */
-.lang-switch .btn,
-.theme-switch .btn {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--ink-disabled);
-  background: transparent;
-  border-color: transparent;
-  border-radius: var(--rounded-full);
-  padding: 0.25rem 0.65rem;
+/* Admin page topbar (AdminApp.vue) */
+.topbar {
+  background: var(--surface-base);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.lang-switch .btn.active,
-.lang-switch .btn[aria-current="true"],
-.theme-switch .btn.active,
-.theme-switch .btn[aria-pressed="true"] {
-  color: var(--accent);
-  border-color: var(--border-accent);
-  background: transparent;
-}
+.topbar .navbar-brand { color: var(--ink-primary); }
 
 .lang-switch .dropdown-toggle,
 .theme-switch .dropdown-toggle {
@@ -187,6 +180,7 @@ main { flex: 1 0 auto; }
   color: var(--ink-disabled);
   background: transparent;
   border-color: transparent;
+  border-radius: var(--rounded-full);
   padding: 0.25rem 0.65rem;
 }
 
@@ -419,7 +413,8 @@ main { flex: 1 0 auto; }
   color: var(--ink-primary);
 }
 
-.modal-header .btn-close {
+/* Light-on-dark X for the dark theme only; the light theme keeps Bootstrap's dark X. */
+:root:not([data-theme="light"]) .modal-header .btn-close {
   filter: invert(1) brightness(0.6);
 }
 
@@ -554,7 +549,7 @@ main { flex: 1 0 auto; }
   --bs-table-bg: transparent;
   --bs-table-border-color: var(--border-subtle);
   --bs-table-hover-color: var(--ink-primary);
-  --bs-table-hover-bg: var(--surface-raised);
+  --bs-table-hover-bg: rgba(var(--bs-primary-rgb), 0.06);
   --bs-table-striped-color: var(--ink-primary);
   color: var(--ink-primary);
 }
@@ -609,10 +604,3 @@ main { flex: 1 0 auto; }
   border-left: 1px solid var(--border-accent);
   transform: rotate(45deg);
 }
-
-/* ---- Future theme extension point ---- */
-/*
-[data-theme="rosy-bold"] {
-  Rosy Bold token overrides go here
-}
-*/
